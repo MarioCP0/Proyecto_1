@@ -14,7 +14,7 @@ public class Node<T> {
         children.add(child);
     }
 
-    public T getData() {
+    public T getData() { 
         return data;
     }
 
