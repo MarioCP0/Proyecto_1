@@ -15,32 +15,31 @@ public class ParserEnv {
 
     public LinkedList<AST<?>> Parsing(ArrayList<String> tokens){
         LinkedList<AST<?>> LogicalOrder = new LinkedList<AST<?>>(); //Orden logico del programa
-        Stack<String> CurrentList = new Stack<String>(); //Lista actual que se esta generando
+        ArrayList<String> CurrentList = new ArrayList<String>(); //Lista actual
         int ListCounter = 0; //Contador de listas
         for (int i = 0; i < tokens.size(); i++) { // Iteracion en la lista, para determinar que es cada cosa
 
 
             //Estas Condicionales su proposito es agregar las cosas a la pilaactual y ir Llevando la cuenta de los parentesis
             if (CurrentList.isEmpty() && tokens.get(i).equals("(")){
-                CurrentList.push(tokens.get(i));
+                CurrentList.add(tokens.get(i));
                 ListCounter++;
             }
-            else if (!PairParentesis(ListCounter) && tokens.get(i).equals("(")){
-                CurrentList.push(tokens.get(i));
+            else if (PairParentesis(ListCounter) && tokens.get(i).equals("(")){
+                CurrentList.add(tokens.get(i));
                 ListCounter++;
             }
             else if (!PairParentesis(ListCounter) && !tokens.get(i).equals(")")){
-                CurrentList.push(tokens.get(i));
+                CurrentList.add(tokens.get(i));
             }
             else if (!PairParentesis(ListCounter) && tokens.get(i).equals(")")){
-                CurrentList.push(tokens.get(i));
+                CurrentList.add(tokens.get(i));
                 ListCounter++;
             }
 
             // Determinando que es una lista cerrada decide en cual de las 3 estructuras se va a meter
-            if ( PairParentesis(ListCounter)){
-                CurrentList.push(tokens.get(i));
-                switch (CurrentList.get(1)) {
+            if (PairParentesis(ListCounter)){
+                switch (CurrentList.get(2)) {
                     case "defun":
                         SetFunction(CurrentList);
                         CurrentList.clear();
@@ -58,25 +57,19 @@ public class ParserEnv {
         return LogicalOrder;
     }
 
-    private boolean PairParentesis(int ListCounter) { //Determina si el numero de parentesis es par y por consecuencia si la lista esta cerrada
-        return ListCounter%2 == 0;
-    }
-
-    private AST<String> ASTGenerator(Stack<String> CurrentList){
-        Stack<String> CurrentListFlip = new Stack<String>();
+    private AST<String> ASTGenerator(ArrayList<String> CurrentList){
         AST<String> CurrentAST;
-        while (!CurrentList.isEmpty()) {
-            CurrentListFlip.push(CurrentList.pop());
-        }
-        CurrentListFlip.pop(); //Elimina el parentesis de cierre
-        switch (CurrentListFlip.pop()) {
+
+        switch (CurrentList.get(1)) {
             case "defun":
-                CurrentAST = new AST<String>(CurrentListFlip.pop());
-                // TODO: Implemetar el AST como planificado
+                CurrentAST = new AST<String>(CurrentList.get(2));
+                while (!CurrentList.isEmpty()) {
+
+                }
                 return CurrentAST;
             default:
-                CurrentAST = new AST<String>(CurrentListFlip.pop());
-                while (!CurrentListFlip.isEmpty()) {
+                CurrentAST = new AST<String>(CurrentList.get(1));
+                while (!CurrentList.isEmpty()) {
                     // TODO: Implementar el AST para la lista logica, un root, 2 hijos, de ahi cada node tendra sus hijo (Siendo dos cada uno)
                 }
                 return CurrentAST;
@@ -85,13 +78,17 @@ public class ParserEnv {
 
     }
 
-    private void SetVariable(Stack<String> CurrentList){
+    private void SetVariable(ArrayList<String> CurrentList){
         String Variable = CurrentList.get(1);
         String Value = CurrentList.get(2);
         Variables.put(Variable, Value);
     }
 
-    private void SetFunction(Stack<String> CurrentList){
+    private void SetFunction(ArrayList<String> CurrentList){
         Functions.put(CurrentList.get(2), ASTGenerator(CurrentList));
+    }
+
+    private boolean PairParentesis(int ListCounter) { //Determina si el numero de parentesis es par y por consecuencia si la lista esta cerrada
+        return ListCounter%2 == 0;
     }
 }
