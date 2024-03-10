@@ -36,6 +36,9 @@ public class ParserEnv {
                         case "setq":
                             SetVariable(CurrentList);
                             break;
+                        case "atom":
+                            SetVariable(CurrentList);
+                            break;
                         default:
                             LogicalOrder.add(ASTGenerator(CurrentList));
                             break;
@@ -53,19 +56,39 @@ public class ParserEnv {
             case "defun":
                 CurrentAST = new AST<String>(CurrentList.get(2));
                 CurrentList.remove(2); //Elimina el nombre de la funcion
+                CurrentList.remove(1); //Elimina el defun
+                CurrentList.remove(0); //Elimina el parentesis
+                CurrentList.remove(CurrentList.size()-1); //Elimina el parentesis
+                boolean parametersPut = true;
                 for (String token : CurrentList) {
-                    // TODO: Implement the rest of the function
+                    if (token.equals("(")){
+                        continue; // Ignora el parentesis
+                    }
+                    // Adding parameters to the function
+                    if (parametersPut){
+                        if (token.equals(")")){
+                            parametersPut = false;
+                        }
+                        else{
+                            CurrentAST.addChild(new Node<String>(token));
+                        }
+                    }
+                    // Add AST to the function
+                    else{
+                        if (token.equals(")")){
+                            break;
+                        }
+                    }
+                    // TODO: Ver como ordenar el arbol
                     
                 }
                 return CurrentAST;
             default:
                 CurrentAST = new AST<String>(CurrentList.get(1)); //Operator
 
-                Node<String> LeftNode = new Node<String>(CurrentList.get(2));
-                Node<String> RightNode = new Node<String>(CurrentList.get(3));
-                
-                CurrentAST.addChild(LeftNode);
-                CurrentAST.addChild(RightNode);
+                for (int i = 2; i < CurrentList.size()-1; i++) {
+                    CurrentAST.addChild(new Node<String>(CurrentList.get(i))); // Agrega los hijos al arbol
+                }
                 return CurrentAST;
                 
         }
