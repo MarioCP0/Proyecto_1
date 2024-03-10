@@ -19,4 +19,8 @@ public class AST<T> {
         children.add(child);
     }
 
+    public ArrayList<Node<T>> getChildren() {
+        return children;
+    }
+
 }
