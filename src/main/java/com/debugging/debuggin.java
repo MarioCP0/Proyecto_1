@@ -5,39 +5,35 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import com.ParsingEstructures.AST;
+import com.ParsingEstructures.Node;
 
 public class debuggin {
     public static void main(String[] args) {
+        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList("(","+","2","3",")"));
         LinkedList<AST<?>> LogicalOrder = new LinkedList<AST<?>>(); //Orden logico del programa
-        ArrayList<String> CurrentList = new ArrayList<String>(); //Lista actual
-        int ListCounter = 0; //Contador de listas
-        ArrayList<String> tokens = new ArrayList<>(Arrays.asList("(", "defun", "sum", "(", "a", "b", ")", "(", "+", "a", "b", ")", ")","(", "sum", "1", "2", ")"));
-        for (int i = 0; i < tokens.size(); i++) {
-            if (CurrentList.isEmpty() && tokens.get(i).equals("(")){
-                CurrentList.add(tokens.get(i));
-                ListCounter++;
-            }
-            else if (PairParentesis(ListCounter) && tokens.get(i).equals("(")){
-                CurrentList.add(tokens.get(i));
-                ListCounter++;
-            }
-            else if (!PairParentesis(ListCounter) && !tokens.get(i).equals(")")){
-                CurrentList.add(tokens.get(i));
-            }
-            else if (!PairParentesis(ListCounter) && tokens.get(i).equals(")")){
-                CurrentList.add(tokens.get(i));
-                ListCounter++;
-            }
-            else{
-                break;
-            }
-        }
-        for (String string : CurrentList) {
-            System.out.println(string);
-        }
+        // Print all the Tree
+        LogicalOrder.add(ASTGenerator(tokens));
+        System.out.println(LogicalOrder);
     }
-    
-    private static boolean PairParentesis(int ListCounter) { //Determina si el numero de parentesis es par y por consecuencia si la lista esta cerrada
-        return ListCounter%2 == 0;
+    private static AST<String> ASTGenerator(ArrayList<String> CurrentList){
+        AST<String> CurrentAST;
+
+        switch (CurrentList.get(1)) {
+            case "defun":
+                CurrentAST = new AST<String>(CurrentList.get(2));
+                CurrentList.remove(2); //Elimina el nombre de la funcion
+                // TODO: Implement the rest of the function
+                return CurrentAST;
+            default:
+                CurrentAST = new AST<String>(CurrentList.get(1)); //Operator
+
+                Node<String> LeftNode = new Node<String>(CurrentList.get(2));
+                Node<String> RightNode = new Node<String>(CurrentList.get(3));
+                
+                CurrentAST.addChild(LeftNode);
+                CurrentAST.addChild(RightNode);
+                return CurrentAST;
+        }
+
     }
 }
