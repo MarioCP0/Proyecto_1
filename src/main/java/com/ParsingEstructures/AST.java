@@ -15,8 +15,9 @@ public class AST<T> {
         return root;
     }
 
-    public void addChild(Node<T> child) {
-        children.add(child);
+    public void addChild(T ChildData) {
+        Node<T> newChild = new Node<T>(ChildData);
+        children.add(newChild);
     }
 
     public ArrayList<Node<T>> getChildren() {

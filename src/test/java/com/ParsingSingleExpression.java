@@ -12,74 +12,54 @@ import com.ParsingEstructures.Node;
 
 public class ParsingSingleExpression {
 
+    // TODO: REFACTOR TESTS
     @Test
     public void ParsingSingleExpressionTest()
     {
         ParserEnv parser = new ParserEnv();
-        ArrayList<Node<String>> TestingTokens = new ArrayList<Node<String>>(Arrays.asList(new Node<String>("2"), new Node<String>("3")));
-        AST<String> ast;
-        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList("(","+","2","3",")"));
-        ast = parser.ASTGenerator(tokens);
-        assertTrue(ast.getRoot().getData().equals("+"));
-        for (int i = 0; i < ast.getChildren().size(); i++) {
-            assertTrue(ast.getChildren().get(i).getData().equals(TestingTokens.get(i).getData()));
+
+        ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
+        tokens.add(new ArrayList<String>(Arrays.asList("+", "2", "3")));
+        tokens.add(new ArrayList<String>(Arrays.asList("+", "7", "3")));
+
+        AST<String> ast_for_asserting = new AST<String>("+");
+        ast_for_asserting.addChild("2");
+        ast_for_asserting.addChild("3");
+
+        AST<String> ast_for_asserting2 = new AST<String>("+");
+        ast_for_asserting2.addChild("7");
+        ast_for_asserting2.addChild("3");
+
+
+        for (ArrayList<String> token : tokens) {
+            parser.Parsing(token);
         }
-        
+
+        // Check if the first AST is correct
+        AST<String> ast = parser.getLogicalOrder().get(0);
+        Node<String> root = ast.getRoot();
+        assertTrue( root.getData().equals(ast_for_asserting.getRoot().getData()) );
+        assertTrue( ast.getChildren().get(0).getData().equals(ast_for_asserting.getChildren().get(0).getData()));
+        assertTrue( ast.getChildren().get(1).getData().equals(ast_for_asserting.getChildren().get(1).getData()));
+
+
     }
+
     @Test
-    public void ParsingSingleExpressionLogiclOrder(){
+    public void CheckingVariables()
+    {
         ParserEnv parser = new ParserEnv();
 
-        LinkedList<AST<?>> LogicOrder;
+        ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
+        tokens.add(new ArrayList<String>(Arrays.asList("setq", "x", "3")));
+        tokens.add(new ArrayList<String>(Arrays.asList("setq", "y", "3")));
 
-        LinkedList<AST<?>> TestingLogicOrder = new LinkedList<AST<?>>();
-        AST<String> ast = new AST<String>("+");
-        ArrayList<Node<String>> TestingTokens = new ArrayList<Node<String>>(Arrays.asList(new Node<String>("2"), new Node<String>("3")));
-        for (Node<String> token : TestingTokens) {
-            ast.addChild(token);
+        for (ArrayList<String> token : tokens) {
+            parser.Parsing(token);
         }
-        TestingLogicOrder.add(ast);
 
-        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList("(","+","2","3",")"," "));
-        LogicOrder = parser.Parsing(tokens);
-        assertTrue(LogicOrder.size() == TestingLogicOrder.size());
-        for (int i = 0; i < LogicOrder.size(); i++) {
-            assertTrue(LogicOrder.get(i).getRoot().getData().equals(TestingLogicOrder.get(i).getRoot().getData()));
-            for (int j = 0; j < LogicOrder.get(i).getChildren().size(); j++) {
-                assertTrue(LogicOrder.get(i).getChildren().get(j).getData().equals(TestingLogicOrder.get(i).getChildren().get(j).getData()));
-            }
-        }
-    }
-    @Test
-    public void DoubleExpressionParsing(){
-        ParserEnv parser = new ParserEnv();
-
-        LinkedList<AST<?>> LogicOrder;
-
-        LinkedList<AST<?>> TestingLogicOrder = new LinkedList<AST<?>>();
-        AST<String> ast = new AST<String>("+");
-        ArrayList<Node<String>> TestingTokens = new ArrayList<Node<String>>(Arrays.asList(new Node<String>("2"), new Node<String>("3")));
-        for (Node<String> token : TestingTokens) {
-            ast.addChild(token);
-        }
-        TestingLogicOrder.add(ast);
-
-        ast = new AST<String>("+");
-        TestingTokens = new ArrayList<Node<String>>(Arrays.asList(new Node<String>("2"), new Node<String>("3")));
-        for (Node<String> token : TestingTokens) {
-            ast.addChild(token);
-        }
-        TestingLogicOrder.add(ast);
-
-        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList("(","+","2","3",")"," ","(","+","2","3",")"," "));
-        LogicOrder = parser.Parsing(tokens);
-        assertTrue(LogicOrder.size() == TestingLogicOrder.size());
-        for (int i = 0; i < LogicOrder.size(); i++) {
-            assertTrue(LogicOrder.get(i).getRoot().getData().equals(TestingLogicOrder.get(i).getRoot().getData()));
-            for (int j = 0; j < LogicOrder.get(i).getChildren().size(); j++) {
-                assertTrue(LogicOrder.get(i).getChildren().get(j).getData().equals(TestingLogicOrder.get(i).getChildren().get(j).getData()));
-            }
-        }
+        assertTrue( parser.getVariables().get("x").equals("3") );
+        assertTrue( parser.getVariables().get("y").equals("3") );
     }
 
 }
