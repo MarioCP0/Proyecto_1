@@ -27,7 +27,6 @@ public class ParserEnv {
     }
 
     public void Parsing(ArrayList<String> CurrentList){ // this parse big list per big list
-        System.out.println("CurrentList: " + CurrentList.get(0));
         switch (CurrentList.get(0)) {//Determina el tipo de lista
             case "defun":
                 SetFunction(CurrentList);
@@ -55,15 +54,19 @@ public class ParserEnv {
                 // TODO: Implementar la creacion de funciones
                 break;
             case "cond":
+                System.out.println(CurrentList);
+                // TODO: Llegar al adt prepuesto
                 /*
                  * en este caso, el primer elemento si sera la funcion cond, por lo que se crea el nodo raiz
                  * luego para el orden de la condicional va de la siguiente forma:
-                 *                             cond
-                 *           /                  |          \
-                 *      comparador         comparador...   #asi sucesivamente
-                 *      /  \   \
-                 *    ...  ...  resutlado   #cosas que se comparan
+                 *                           cond
+                 *           /         /            \                   \
+                 *      comparador  resultado        comparador...   #asi sucesivamente
+                 *      /  \   
+                 *    ...  ...     #cosas que se comparan
                  */
+
+                
                 CurrentAST = new AST<String>(CurrentList.get(0)); // Crea el nodo raiz
                 CurrentList.remove(0); // Elimina el primer elemento de la lista
                 for (String token : CurrentList){
@@ -74,9 +77,9 @@ public class ParserEnv {
                         CurrentAST.addChild(new AST<String>(token));
                     }
                 }
-                // Take the last element of the logical order
                 break;
             default:
+                System.out.println(CurrentList);
                 if (NestedLists.containsKey(CurrentList.get(0))){
                     CurrentAST = ASTGenerator(NestedLists.get(CurrentList.get(0)));
                 }
@@ -92,7 +95,7 @@ public class ParserEnv {
                         CurrentAST.addChild(new AST<String>(token));
                     }
                 }
-                break;
+            break;
         }
         return CurrentAST;
     }
