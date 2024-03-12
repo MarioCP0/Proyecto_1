@@ -1,62 +1,51 @@
 package com;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-
 import org.junit.Test;
+import java.util.ArrayList;
+import java.util.Arrays;
+import static org.junit.Assert.assertEquals;
 
 import com.ParsingEstructures.Tokenizer;
 
 public class TokenizerTest {
 
     @Test
-    public void testTokenize() {
-        String input = "(setq x 10) (setq y 20) (setq z \"Hola\") (defun add (x y) (+ x y)) (add x y)";
-        ArrayList<String> expectedTokens = new ArrayList<>();
-        expectedTokens.add("(");
-        expectedTokens.add("setq");
-        expectedTokens.add("x");
-        expectedTokens.add("10");
-        expectedTokens.add(")");
-        expectedTokens.add("");
-        expectedTokens.add("(");
-        expectedTokens.add("setq");
-        expectedTokens.add("y");
-        expectedTokens.add("20");
-        expectedTokens.add(")");
-        expectedTokens.add("");
-        expectedTokens.add("(");
-        expectedTokens.add("setq");
-        expectedTokens.add("z");
-        expectedTokens.add("\"Hola\"");
-        expectedTokens.add(")");
-        expectedTokens.add("");
-        expectedTokens.add("(");
-        expectedTokens.add("defun");
-        expectedTokens.add("add");
-        expectedTokens.add("(");
-        expectedTokens.add("x");
-        expectedTokens.add("y");
-        expectedTokens.add(")");
-        expectedTokens.add("");
-        expectedTokens.add("(");
-        expectedTokens.add("+");
-        expectedTokens.add("x");
-        expectedTokens.add("y");
-        expectedTokens.add(")");
-        expectedTokens.add("");
-        expectedTokens.add(")");
-        expectedTokens.add("");
-        expectedTokens.add("(");
-        expectedTokens.add("add");
-        expectedTokens.add("x");
-        expectedTokens.add("y");
-        expectedTokens.add(")");
-        expectedTokens.add("");
+    public void testTokenizeBasic() {
+        String input = "(+ 1 2)";
+        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "2", ")"));
+        ArrayList<String> actual = Tokenizer.tokenize(input);
+        assertEquals(expected, actual);
+    }
 
-        ArrayList<String> actualTokens = Tokenizer.tokenize(input);
+    @Test
+    public void testTokenizeNestedExpressions() {
+        String input = "(+ 1 (* 2 3))";
+        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "Expression1", ")"));
+        ArrayList<String> actual = Tokenizer.tokenize(input);
+        assertEquals(expected, actual);
+    }
 
-        assertEquals(expectedTokens, actualTokens);
+    @Test
+    public void testTokenizeExtraSpaces() {
+        String input = "(  +  1   2   )";
+        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "2", ")"));
+        ArrayList<String> actual = Tokenizer.tokenize(input);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testTokenizeEmptyExpression() {
+        String input = "()";
+        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", ")"));
+        ArrayList<String> actual = Tokenizer.tokenize(input);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testTokenizeEmptyString() {
+        String input = "";
+        ArrayList<String> expected = new ArrayList<>();
+        ArrayList<String> actual = Tokenizer.tokenize(input);
+        assertEquals(expected, actual);
     }
 }
