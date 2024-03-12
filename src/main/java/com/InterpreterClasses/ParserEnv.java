@@ -11,7 +11,7 @@ public class ParserEnv {
     private HashMap<String, AST<String>> Functions = new HashMap<String, AST<String>>();
     private HashMap<String, String> Variables = new HashMap<String, String>(); 
     private LinkedList<AST<String>> LogicalOrder = new LinkedList<AST<String>>();
-    private HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
+    public HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>(); //public for debugging
 
     // Getters
     public HashMap<String, AST<String>> getFunctions() {return Functions;} 
@@ -54,41 +54,43 @@ public class ParserEnv {
                 // TODO: Implementar la creacion de funciones
                 break;
             case "cond":
-                System.out.println(CurrentList);
-                // TODO: Llegar al adt prepuesto
                 /*
                  * en este caso, el primer elemento si sera la funcion cond, por lo que se crea el nodo raiz
                  * luego para el orden de la condicional va de la siguiente forma:
                  *                           cond
-                 *           /         /            \                   \
-                 *      comparador  resultado        comparador...   #asi sucesivamente
-                 *      /  \   
-                 *    ...  ...     #cosas que se comparan
+                 *           /                 \                   \
+                 *      comparador         comparador...   #asi sucesivamente
+                 *      /  \   \
+                 *    ...  ...  resultado   #cosas que se comparan
                  */
-
                 
                 CurrentAST = new AST<String>(CurrentList.get(0)); // Crea el nodo raiz
                 CurrentList.remove(0); // Elimina el primer elemento de la lista
                 for (String token : CurrentList){
-                    if (NestedLists.containsKey(token)){
-                        CurrentAST.addChild(ASTGenerator(NestedLists.get(token)));
-                    }
-                    else{
-                        CurrentAST.addChild(new AST<String>(token));
-                    }
+                    CurrentAST.addChild(ASTGenerator(NestedLists.get(token)));
                 }
                 break;
             default:
-                System.out.println(CurrentList);
+                /*
+                 * La logica basica de los ADT es sencilla
+                 *              operador #Este es el nodo raiz
+                 *      /       |       \       \
+                 *    hijo1  hijo2     hijo3  hijo4 #Suvecivamente
+                 */
                 if (NestedLists.containsKey(CurrentList.get(0))){
                     CurrentAST = ASTGenerator(NestedLists.get(CurrentList.get(0)));
+                    System.out.println("root children for nested list: " + CurrentList.get(0));
+                    System.out.println("CurrentList: " + CurrentList.toString());
                 }
                 else{
                     CurrentAST = new AST<String>(CurrentList.get(0));
+                    System.out.println("root children for first comparator: " + CurrentList.get(0));
                 }
                 CurrentList.remove(0); // Elimina el primer elemento de la lista
                 for (String token : CurrentList){
+                    System.out.println("token: " + token);
                     if (NestedLists.containsKey(token)){
+                        // Print the token that follows
                         CurrentAST.addChild(ASTGenerator(NestedLists.get(token)));
                     }
                     else{
