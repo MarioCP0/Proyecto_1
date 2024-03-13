@@ -29,7 +29,7 @@ public class ParserEnv {
     public void Parsing(ArrayList<String> CurrentList){ // this parse big list per big list
         switch (CurrentList.get(0)) {//Determina el tipo de lista
             case "defun":
-                SetFunction(CurrentList);
+                Functions.put(CurrentList.get(1), ASTGenerator(CurrentList));
                 break;
             case "setq":
                 SetVariable(CurrentList);
@@ -39,7 +39,7 @@ public class ParserEnv {
                 break;
             case "cond":
                 LogicalOrder.add(ASTGenerator(CurrentList));
-                break; // soy un imbecil, no puse el break
+                break; // imma fucking imbecil fr
             default:
                 LogicalOrder.add(ASTGenerator(CurrentList));
                 break;
@@ -52,6 +52,23 @@ public class ParserEnv {
         switch (CurrentList.get(0)) {
             case "defun":
                 // TODO: Implementar la creacion de funciones
+                boolean ParamatersAdded = false;
+
+                CurrentList.remove(0);
+                CurrentAST = new AST<String>(CurrentList.get(1));
+                CurrentList.remove(0);
+    
+                for (String token: CurrentList){
+                    if (!ParamatersAdded){
+                        // Add all 
+                        ParamatersAdded = true;
+                    }
+                    if (ParamatersAdded && NestedLists.containsKey(token)){
+                        for (String parameter : NestedLists.get(token)){
+                            CurrentAST.addChild(new AST<String>(parameter));
+                        }
+                    }
+                }
                 break;
             case "cond":
                 /*
@@ -77,18 +94,15 @@ public class ParserEnv {
                  *      /       |       \       \
                  *    hijo1  hijo2     hijo3  hijo4 #Suvecivamente
                  */
+                System.out.println("CurrentList: " + CurrentList.toString());
                 if (NestedLists.containsKey(CurrentList.get(0))){
                     CurrentAST = ASTGenerator(NestedLists.get(CurrentList.get(0)));
-                    System.out.println("root children for nested list: " + CurrentList.get(0));
-                    System.out.println("CurrentList: " + CurrentList.toString());
                 }
                 else{
                     CurrentAST = new AST<String>(CurrentList.get(0));
-                    System.out.println("root children for first comparator: " + CurrentList.get(0));
                 }
                 CurrentList.remove(0); // Elimina el primer elemento de la lista
                 for (String token : CurrentList){
-                    System.out.println("token: " + token);
                     if (NestedLists.containsKey(token)){
                         // Print the token that follows
                         CurrentAST.addChild(ASTGenerator(NestedLists.get(token)));
@@ -108,7 +122,10 @@ public class ParserEnv {
         Variables.put(Variable, Value); // Agrega la variable al diccionario
     }
 
-    private void SetFunction(ArrayList<String> CurrentList){
-        Functions.put(CurrentList.get(2), ASTGenerator(CurrentList));
+    private void SetParameter(ArrayList<String> CurrentList, AST<String> CurrentAST){
+        for (String token : CurrentList){
+            CurrentAST.addChild(new AST<String>(token));
+        }
     }
 }
+

@@ -12,12 +12,10 @@ public class debuggin {
     public static void main(String[] args) {
         // Este test verifica que el parser pueda parsear una expresion simple
         HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
-        NestedLists.put("COMPARE1", new ArrayList<String>(Arrays.asList(">", "a", "b"))); 
-        NestedLists.put("jasdk3", new ArrayList<String>(Arrays.asList("COMPARE1", "c"))); //I have to add a case when the first element corresponds to a condition
-        NestedLists.put("COMPARE2", new ArrayList<String>(Arrays.asList(">", "d", "f")));
-        NestedLists.put("jasdk4", new ArrayList<String>(Arrays.asList("COMPARE2", "g"))); //I have to add a case when the first element corresponds to a condition
+        NestedLists.put("parameters", new ArrayList<String>(Arrays.asList("x", "y")));
+        NestedLists.put("addition", new ArrayList<String>(Arrays.asList("+", "x", "y")));
         ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
-        tokens.add(new ArrayList<String>(Arrays.asList("cond", "jasdk3", "jasdk4")));
+        tokens.add(new ArrayList<String>(Arrays.asList("defun", "add", "parameters", "addition")));
         ParserEnv parser = new ParserEnv(NestedLists);
         System.out.println("NestedLists: " + NestedLists.toString());
 
@@ -34,6 +32,17 @@ public class debuggin {
                     for (AST<String> node3 : node2.getChildren()){
                         System.out.println("Result Fourth Node: " + node3.getRoot().getData());
                     }
+                }
+            }
+        }
+
+        for (String key : parser.getFunctions().keySet()) {
+            System.out.println("Function: " + key);
+            System.out.println("Parameters: " + parser.getFunctions().get(key).getRoot().getData());
+            for (AST<String> node : parser.getFunctions().get(key).getChildren()){
+                System.out.println("Function AST Children: " + node.getRoot().getData());
+                for (AST<String> node2 : node.getChildren()){
+                    System.out.println("Function AST Grandchildren: " + node2.getRoot().getData());
                 }
             }
         }

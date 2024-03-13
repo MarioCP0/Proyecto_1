@@ -5,7 +5,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 import com.InterpreterClasses.ParserEnv;
 import com.ParsingEstructures.AST;
@@ -150,9 +149,9 @@ public class ParsingExpression {
                 // Este test verifica que el parser pueda parsear una expresion simple
                 HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
                 NestedLists.put("COMPARE1", new ArrayList<String>(Arrays.asList(">", "a", "b"))); 
-                NestedLists.put("jasdk3", new ArrayList<String>(Arrays.asList("COMPARE1", "c"))); //I have to add a case when the first element corresponds to a condition
+                NestedLists.put("jasdk3", new ArrayList<String>(Arrays.asList("COMPARE1", "c"))); 
                 NestedLists.put("COMPARE2", new ArrayList<String>(Arrays.asList(">", "d", "f")));
-                NestedLists.put("jasdk4", new ArrayList<String>(Arrays.asList("COMPARE2", "g"))); //I have to add a case when the first element corresponds to a condition
+                NestedLists.put("jasdk4", new ArrayList<String>(Arrays.asList("COMPARE2", "g"))); 
                 ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
                 tokens.add(new ArrayList<String>(Arrays.asList("cond", "jasdk3", "jasdk4")));
                 ParserEnv parser = new ParserEnv(NestedLists);
@@ -174,6 +173,34 @@ public class ParsingExpression {
                         }
                     }
                 }
+    }
+    @Test
+    public void FunctionTest(){
+        HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
+        NestedLists.put("parameters", new ArrayList<String>(Arrays.asList("x", "y")));
+        NestedLists.put("addition", new ArrayList<String>(Arrays.asList("+", "x", "y")));
+        ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
+        tokens.add(new ArrayList<String>(Arrays.asList("defun", "add", "parameters", "addition")));
+        ParserEnv parser = new ParserEnv(NestedLists);
+        System.out.println("NestedLists: " + NestedLists.toString());
+
+        for (ArrayList<String> token : tokens){
+            parser.Parsing(token);
+        }
+
+        for (String key : parser.getFunctions().keySet()) {
+            System.out.println("Function: " + key);
+            System.out.println("Parameters: " + parser.getFunctions().get(key).getRoot().getData());
+            assertTrue(parser.getFunctions().get(key).getRoot().getData().equals("parameters"));
+            for (AST<String> node : parser.getFunctions().get(key).getChildren()){
+                assertTrue(node.getRoot().getData().equals("x") || node.getRoot().getData().equals("y") || node.getRoot().getData().equals("+"));
+                System.out.println("Function AST Children: " + node.getRoot().getData());
+                for (AST<String> node2 : node.getChildren()){
+                    assertTrue(node2.getRoot().getData().equals("x") || node2.getRoot().getData().equals("y") || node2.getRoot().getData().equals("+"));
+                    System.out.println("Function AST Grandchildren: " + node2.getRoot().getData());
+                }
+            }
+        }
     }
 
 }
