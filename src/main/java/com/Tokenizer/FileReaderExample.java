@@ -1,10 +1,12 @@
-package com;
+package com.Tokenizer;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+
+// TODO: meter todas las cosas (caracteres) en una lista 
 public class FileReaderExample {
 
     public static String readFile(String filePath) {

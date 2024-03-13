@@ -3,11 +3,8 @@ package com.InterpreterClasses;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Stack;
 
 import com.ParsingEstructures.AST;
-import com.ParsingEstructures.Node;
-
 
 public class ParserEnv {
     HashMap<String, AST<?>> Functions = new HashMap<String, AST<?>>();

@@ -9,14 +9,14 @@ import com.ParsingEstructures.Node;
 
 public class Evaluator {
 
-    private HashMap<String, AST<?>> functions;
+    private HashMap<String, AST<String>> functions;
     private HashMap<String, String> variables;
-    private LinkedList<AST<String>> LogicalOrder
+    private LinkedList<AST<String>> LogicalOrder;
 
-    public Evaluator(HashMap<String, AST<?>> functions, HashMap<String, String> variables, LinkedList<AST<String>> LogicalOrder) {
+    public Evaluator(HashMap<String, AST<String>> functions, HashMap<String, String> variables, LinkedList<AST<String>> LogicalOrder) {
         this.functions = functions;
         this.variables = variables;
-        this.LinkedList = LinkedList;
+        this.LogicalOrder = LogicalOrder;
     }
 
     public String evaluate(AST<String> ast) {
@@ -45,7 +45,9 @@ public class Evaluator {
         String operator = root.getData();
         LinkedList<Integer> operands = new LinkedList<>();
 
-        // Evaluar operandos
+        // TODO: que esto tenga recursividad, osea que pueda evaluar expresiones anidadas
+
+        
         for (Node<String> child : children) {
             String data = child.getData();
             if (isNumeric(data)) {
@@ -60,7 +62,7 @@ public class Evaluator {
         // Realiza operación en base a el operando
         switch (operator) {
             case "+":
-                return String.valueOf(operands.stream().mapToInt(Integer::intValue).sum());
+
             case "-":
 
                 break;
