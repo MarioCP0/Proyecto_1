@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 
-import com.ParsingEstructures.Tokenizer;
-
 public class TokenizerTest {
 
     @Test
@@ -19,8 +17,8 @@ public class TokenizerTest {
 
     @Test
     public void testTokenizeNestedExpressions() {
-        String input = "(+ 1 (* 2 3))";
-        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "Expression1", ")"));
+        String input = "(+ 1 (* 2 3) 4 )";
+        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "Expression1","4", ")"));
         ArrayList<String> actual = Tokenizer.tokenize(input);
         assertEquals(expected, actual);
     }

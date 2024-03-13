@@ -1,4 +1,4 @@
-package com.ParsingEstructures;
+package com;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.Map;
 public class Tokenizer {
 
     public static boolean isParenthesesClosed = true;
-    public static Map<String, String> expresionesAnhidadas = new HashMap<String, String>() ;
+    public static Map<String, ArrayList<String>> expresionesAnhidadas = new HashMap<String, ArrayList<String>>() ;
     public static int leftParentheses = 0;
     public static int rightParentheses = 0;
     public static int nestedExpressions = 0;
@@ -25,7 +25,8 @@ public class Tokenizer {
             if (!isParenthesesClosed) {
                 
                 if (token.contains("(")) {
-                    String value = token;
+                    ArrayList<String> value = new ArrayList<String>();
+                    value.add(token);
                     leftParentheses++;
                     
                     while (!isParenthesesClosed) {
@@ -34,7 +35,7 @@ public class Tokenizer {
                             break;
                         }
                         token = split[i];
-                        value += " " + token;
+                        value.add(token);
                         if (token.contains(")")) {
                             nestedExpressions++;
                             String key = "Expression" + nestedExpressions;
@@ -70,13 +71,11 @@ public class Tokenizer {
 
         }
 
-            
-
         return tokens;
     }
 
     public static void main(String[] args) {
-        String input = "(+ 1 2)";
+        String input = "(defun add (x y) (+ x y)";
         ArrayList<String> tokens = tokenize(input);
         System.out.println(tokens);
     }
