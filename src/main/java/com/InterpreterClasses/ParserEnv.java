@@ -34,9 +34,6 @@ public class ParserEnv {
             case "setq":
                 SetVariable(CurrentList);
                 break;
-            case "atom":
-                SetVariable(CurrentList);
-                break;
             case "cond":
                 LogicalOrder.add(ASTGenerator(CurrentList));
                 break; // imma fucking imbecil fr
