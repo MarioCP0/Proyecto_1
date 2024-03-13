@@ -126,11 +126,5 @@ public class ParserEnv {
         String Value = CurrentList.get(2); // Valor de la variable
         Variables.put(Variable, Value); // Agrega la variable al diccionario
     }
-
-    private void SetParameter(ArrayList<String> CurrentList, AST<String> CurrentAST){
-        for (String token : CurrentList){
-            CurrentAST.addChild(new AST<String>(token));
-        }
-    }
 }
 
