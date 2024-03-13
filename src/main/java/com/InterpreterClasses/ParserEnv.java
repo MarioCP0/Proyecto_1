@@ -3,92 +3,134 @@ package com.InterpreterClasses;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Stack;
 
 import com.ParsingEstructures.AST;
-import com.ParsingEstructures.Node;
 
 
 public class ParserEnv {
-    HashMap<String, AST<?>> Functions = new HashMap<String, AST<?>>();
-    HashMap<String, String> Variables = new HashMap<String, String>(); 
+    private HashMap<String, AST<String>> Functions = new HashMap<String, AST<String>>();
+    private HashMap<String, String> Variables = new HashMap<String, String>(); 
+    private LinkedList<AST<String>> LogicalOrder = new LinkedList<AST<String>>();
+    public HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>(); //public for debugging
 
-    public LinkedList<AST<?>> Parsing(ArrayList<String> tokens){
-        LinkedList<AST<?>> LogicalOrder = new LinkedList<AST<?>>(); //Orden logico del programa
-        ArrayList<String> CurrentList = new ArrayList<String>(); //Lista actual
-        int ListCounter = 0; //Contador de listas
-        for (int i = 0; i < tokens.size(); i++) { // Iteracion en la lista, para determinar que es cada cosa
+    // Getters
+    public HashMap<String, AST<String>> getFunctions() {return Functions;} 
 
+    public HashMap<String, String> getVariables() {return Variables;}
 
-            //Estas Condicionales su proposito es agregar las cosas a la pilaactual y ir Llevando la cuenta de los parentesis
-            if (CurrentList.isEmpty() && tokens.get(i).equals("(")){
-                CurrentList.add(tokens.get(i));
-                ListCounter++;
-            }
-            else if (PairParentesis(ListCounter) && tokens.get(i).equals("(")){
-                CurrentList.add(tokens.get(i));
-                ListCounter++;
-            }
-            else if (!PairParentesis(ListCounter) && !tokens.get(i).equals(")")){
-                CurrentList.add(tokens.get(i));
-            }
-            else if (!PairParentesis(ListCounter) && tokens.get(i).equals(")")){
-                CurrentList.add(tokens.get(i));
-                ListCounter++;
-            }
+    public LinkedList<AST<String>> getLogicalOrder() {return LogicalOrder;}
 
-            // Determinando que es una lista cerrada decide en cual de las 3 estructuras se va a meter
-            if (PairParentesis(ListCounter)){
-                switch (CurrentList.get(2)) {
-                    case "defun":
-                        SetFunction(CurrentList);
-                        CurrentList.clear();
-                        break;
-                    case "setq":
-                        SetVariable(CurrentList);
-                        CurrentList.clear();
-                        break;
-                    default:
-                        LogicalOrder.add(ASTGenerator(CurrentList));
-                        break;
-                }
-            }
-        }
-        return LogicalOrder;
+    // Constructor
+    public ParserEnv(HashMap<String, ArrayList<String>> NestedLists){
+        this.NestedLists = NestedLists; // el hashmap tiene toda aquella lista anidada que tenga el programa
+        // Talvez sea mas lento, pero me quita de encima el spagehtti code
     }
 
-    private AST<String> ASTGenerator(ArrayList<String> CurrentList){
-        AST<String> CurrentAST;
-
-        switch (CurrentList.get(1)) {
+    public void Parsing(ArrayList<String> CurrentList){ // this parse big list per big list
+        switch (CurrentList.get(0)) {//Determina el tipo de lista
             case "defun":
-                CurrentAST = new AST<String>(CurrentList.get(2));
-                while (!CurrentList.isEmpty()) {
-
-                }
-                return CurrentAST;
+                Functions.put(CurrentList.get(1), ASTGenerator(CurrentList));
+                break;
+            case "setq":
+                SetVariable(CurrentList);
+                break;
+            case "atom":
+                SetVariable(CurrentList);
+                break;
+            case "cond":
+                LogicalOrder.add(ASTGenerator(CurrentList));
+                break; // imma fucking imbecil fr
             default:
-                CurrentAST = new AST<String>(CurrentList.get(1));
-                while (!CurrentList.isEmpty()) {
-                    // TODO: Implementar el AST para la lista logica, un root, 2 hijos, de ahi cada node tendra sus hijo (Siendo dos cada uno)
-                }
-                return CurrentAST;
-                
+                LogicalOrder.add(ASTGenerator(CurrentList));
+                break;
         }
+    }
+    
 
+    public AST<String> ASTGenerator(ArrayList<String> CurrentList){ // The public is for testing purposes (Change it later to private)
+        AST<String> CurrentAST = null; // Initialize CurrentAST with a default value
+        switch (CurrentList.get(0)) {
+            case "defun":
+                /*
+                 *  ADT GOES LIKE THIS 
+                 *                          function name
+                 *     /        /       |                   \                    \        
+                 *   param1 param2    ...           primer operando de parentesis    segundo operando        #parametros con el primer operando
+                 */
+                boolean ParamatersAdded = false;
+
+                CurrentList.remove(0);                                               
+                CurrentAST = new AST<String>(CurrentList.get(1));
+                CurrentList.remove(0);
+    
+                for (String token: CurrentList){
+                    if (!ParamatersAdded){
+                        // Add all 
+                        ParamatersAdded = true;
+                    }
+                    if (ParamatersAdded && NestedLists.containsKey(token)){
+                        for (String parameter : NestedLists.get(token)){
+                            CurrentAST.addChild(new AST<String>(parameter));
+                        }
+                    }
+                }
+                break;
+            case "cond":
+                /*
+                 * en este caso, el primer elemento si sera la funcion cond, por lo que se crea el nodo raiz
+                 * luego para el orden de la condicional va de la siguiente forma:
+                 *                           cond
+                 *           /                 \                   \
+                 *      comparador         comparador...   #asi sucesivamente
+                 *      /  \   \
+                 *    ...  ...  resultado   #cosas que se comparan
+                 */
+                
+                CurrentAST = new AST<String>(CurrentList.get(0)); // Crea el nodo raiz
+                CurrentList.remove(0); // Elimina el primer elemento de la lista
+                for (String token : CurrentList){
+                    CurrentAST.addChild(ASTGenerator(NestedLists.get(token)));
+                }
+                break;
+            default:
+                /*
+                 * La logica basica de los ADT es sencilla
+                 *              operador #Este es el nodo raiz
+                 *      /       |       \       \
+                 *    hijo1  hijo2     hijo3  hijo4 #Suvecivamente
+                 */
+                System.out.println("CurrentList: " + CurrentList.toString());
+                if (NestedLists.containsKey(CurrentList.get(0))){
+                    CurrentAST = ASTGenerator(NestedLists.get(CurrentList.get(0)));
+                }
+                else{
+                    CurrentAST = new AST<String>(CurrentList.get(0));
+                }
+                CurrentList.remove(0); // Elimina el primer elemento de la lista
+                for (String token : CurrentList){
+                    if (NestedLists.containsKey(token)){
+                        // Print the token that follows
+                        CurrentAST.addChild(ASTGenerator(NestedLists.get(token)));
+                    }
+                    else{
+                        CurrentAST.addChild(new AST<String>(token));
+                    }
+                }
+            break;
+        }
+        return CurrentAST;
     }
 
     private void SetVariable(ArrayList<String> CurrentList){
-        String Variable = CurrentList.get(1);
-        String Value = CurrentList.get(2);
-        Variables.put(Variable, Value);
+        String Variable = CurrentList.get(1); // Nombre de la variable
+        String Value = CurrentList.get(2); // Valor de la variable
+        Variables.put(Variable, Value); // Agrega la variable al diccionario
     }
 
-    private void SetFunction(ArrayList<String> CurrentList){
-        Functions.put(CurrentList.get(2), ASTGenerator(CurrentList));
-    }
-
-    private boolean PairParentesis(int ListCounter) { //Determina si el numero de parentesis es par y por consecuencia si la lista esta cerrada
-        return ListCounter%2 == 0;
+    private void SetParameter(ArrayList<String> CurrentList, AST<String> CurrentAST){
+        for (String token : CurrentList){
+            CurrentAST.addChild(new AST<String>(token));
+        }
     }
 }
+
