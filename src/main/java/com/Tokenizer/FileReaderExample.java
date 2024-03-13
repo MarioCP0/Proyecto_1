@@ -9,21 +9,24 @@ import java.util.Arrays;
 
 public class FileReaderExample {
 
-    public ArrayList<ArrayList<String>> readTokensFromFile(String filePath) {
-        ArrayList<ArrayList<String>> tokens = new ArrayList<>();
+    public String readExpressionsFromFile(String filePath) {
+        StringBuilder expressions = new StringBuilder();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] tokensArray = line.trim().split("\\s+");
-                // lista
-                tokens.add(new ArrayList<>(Arrays.asList(tokensArray)));
+                expressions.append(line.trim());
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return tokens;
+        return expressions.toString();
+    }
+
+    public static void main(String[] args) {
+        FileReaderExample fileReaderExample = new FileReaderExample();
+        String expressions = fileReaderExample.readExpressionsFromFile("lisp_files\\tokens.lisp");
+        System.out.println(expressions);
     }
 }
-
