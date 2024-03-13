@@ -8,15 +8,31 @@ import com.ParsingEstructures.AST;
 
 
 public class ParserEnv {
+    /*
+     *        Algo asi va ordenado la funcion
+     * function[nombre de funcion] = AST de la funcion
+     */
     private HashMap<String, AST<String>> Functions = new HashMap<String, AST<String>>();
-    private HashMap<String, String> Variables = new HashMap<String, String>(); 
+    /*
+     *      Ordnamiento de variable
+     * Variables[nombre de la variable] = lista linkeada con los valores
+     */
+    private HashMap<String, LinkedList<String>> Variables = new HashMap<String, LinkedList<String>>();
+    /*
+     *      Ordenamiento de las expresiones
+     * LogicalOrder = lista linkeada con las expresiones de nivel mayor, que no setea nada
+     */ 
     private LinkedList<AST<String>> LogicalOrder = new LinkedList<AST<String>>();
+    /*
+     *     Ordenamiento de las listas anidadas
+     * NestedLists[nombre de la lista] = lista con los elementos de la lista anidada
+     */
     public HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>(); //public for debugging
 
     // Getters
     public HashMap<String, AST<String>> getFunctions() {return Functions;} 
 
-    public HashMap<String, String> getVariables() {return Variables;}
+    public HashMap<String, LinkedList<String>> getVariables() {return Variables;}
 
     public LinkedList<AST<String>> getLogicalOrder() {return LogicalOrder;}
 
@@ -32,9 +48,6 @@ public class ParserEnv {
                 Functions.put(CurrentList.get(1), ASTGenerator(CurrentList));
                 break;
             case "setq":
-                SetVariable(CurrentList);
-                break;
-            case "atom":
                 SetVariable(CurrentList);
                 break;
             case "cond":
@@ -53,9 +66,9 @@ public class ParserEnv {
             case "defun":
                 /*
                  *  ADT GOES LIKE THIS 
-                 *                          HASH del pArametro #TEMAS DE COMPLEJIDAD
-                 *     /        /       |                   \                    \        
-                 *   param1 param2    ...           primer operando de parentesis    segundo operando        #parametros con el primer operando
+                 *   Function[Function name] =      HashName de los parametros
+                 *              /        /       |                   \                    \        
+                 *          param1 param2    ...                primer operando    segundo operando        #parametros con el primer operando
                  */
                 boolean ParamatersAdded = false;
 
@@ -95,7 +108,7 @@ public class ParserEnv {
             default:
                 /*
                  * La logica basica de los ADT es sencilla
-                 *              operador #Este es el nodo raiz
+                 *              operador        #Este es el nodo raiz
                  *      /       |       \       \
                  *    hijo1  hijo2     hijo3  hijo4 #Suvecivamente
                  */
@@ -124,7 +137,17 @@ public class ParserEnv {
     private void SetVariable(ArrayList<String> CurrentList){
         String Variable = CurrentList.get(1); // Nombre de la variable
         String Value = CurrentList.get(2); // Valor de la variable
-        Variables.put(Variable, Value); // Agrega la variable al diccionario
+
+        // Check if the variable already exists
+        if (Variables.containsKey(Variable)) {
+            Variables.get(Variable).add(Value); // Lo mete a la lista linkeada 
+        } else {
+            // si la variable no existe, crea una lista linkeada y le mete el valor
+            LinkedList<String> values = new LinkedList<>();
+            values.add(Value);
+            Variables.put(Variable, values);
+        }
     }
+
 }
 

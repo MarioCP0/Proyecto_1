@@ -63,8 +63,8 @@ public class ParsingExpression {
             parser.Parsing(token);
         }
 
-        assertTrue(parser.getVariables().get("x").equals("2"));
-        assertTrue(parser.getVariables().get("y").equals("3"));
+        assertTrue(parser.getVariables().get("x").getFirst().equals("2"));
+        assertTrue(parser.getVariables().get("y").getFirst().equals("3"));
 
     }
 

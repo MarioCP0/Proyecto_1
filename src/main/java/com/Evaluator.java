@@ -10,10 +10,10 @@ import com.ParsingEstructures.Node;
 public class Evaluator {
 
     private HashMap<String, AST<String>> functions;
-    private HashMap<String, String> variables;
+    private HashMap<String, LinkedList<String>> variables;
 
     // TODO: HACER
-    public Evaluator(HashMap<String, AST<String>> functions, HashMap<String, String> variables, LinkedList<AST<String>> LogicalOrder) {
+    public Evaluator(HashMap<String, AST<String>> functions, HashMap<String, LinkedList<String>> variables, LinkedList<AST<String>> LogicalOrder) {
         this.functions = functions;
         this.variables = variables;
     }
@@ -52,7 +52,7 @@ public class Evaluator {
             if (isNumeric(data)) {
                 operands.add(Integer.parseInt(data));
             } else if (variables.containsKey(data)) {
-                operands.add(Integer.parseInt(variables.get(data)));
+                operands.add(Integer.parseInt(variables.get(data).getFirst())); //TODO: cambiar esto 
             } else {
                 // cualquier otro caso
             }
