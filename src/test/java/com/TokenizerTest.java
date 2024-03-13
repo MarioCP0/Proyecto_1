@@ -1,6 +1,9 @@
 package com;
 
 import org.junit.Test;
+
+import com.TokenizerEstructure.Tokenizer;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import static org.junit.Assert.assertEquals;

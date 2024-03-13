@@ -1,4 +1,4 @@
-package com;
+package com.TokenizerEstructure;
 
 import java.util.ArrayList;
 import java.util.HashMap;
