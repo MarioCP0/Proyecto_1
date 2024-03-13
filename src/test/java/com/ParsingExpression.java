@@ -62,7 +62,7 @@ public class ParsingExpression {
         for (ArrayList<String> token : tokens){
             parser.Parsing(token);
         }
-
+        System.out.println("Variables: " + parser.getVariables().toString());
         assertTrue(parser.getVariables().get("x").getFirst().equals("2"));
         assertTrue(parser.getVariables().get("y").getFirst().equals("3"));
 
@@ -153,8 +153,9 @@ public class ParsingExpression {
                 NestedLists.put("jasdk3", new ArrayList<String>(Arrays.asList("COMPARE1", "c"))); 
                 NestedLists.put("COMPARE2", new ArrayList<String>(Arrays.asList(">", "d", "f")));
                 NestedLists.put("jasdk4", new ArrayList<String>(Arrays.asList("COMPARE2", "g"))); 
+                NestedLists.put("jasdk5", new ArrayList<String>(Arrays.asList("t", "a")));
                 ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
-                tokens.add(new ArrayList<String>(Arrays.asList("cond", "jasdk3", "jasdk4")));
+                tokens.add(new ArrayList<String>(Arrays.asList("cond", "jasdk3", "jasdk4","jasdk5")));
                 ParserEnv parser = new ParserEnv(NestedLists);
                 System.out.println("NestedLists: " + NestedLists.toString());
         
@@ -166,7 +167,7 @@ public class ParsingExpression {
                     assertTrue(parser.getLogicalOrder().get(i).getRoot().getData().equals("cond"));
                     System.out.println("Result Main Node: " + parser.getLogicalOrder().get(i).getRoot().getData());
                     for (AST<String> node : parser.getLogicalOrder().get(i).getChildren()){
-                        assertTrue(node.getRoot().getData().equals(">") || node.getRoot().getData().equals("<"));
+                        assertTrue(node.getRoot().getData().equals(">") || node.getRoot().getData().equals("<") || node.getRoot().getData().equals("t"));
                         System.out.println("Result Second Node: " + node.getRoot().getData());
                         for (AST<String> node2 : node.getChildren()){
                             assertTrue(node2.getRoot().getData().equals("c") || node2.getRoot().getData().equals("g") || node2.getRoot().getData().equals("a") || node2.getRoot().getData().equals("b") || node2.getRoot().getData().equals("d") || node2.getRoot().getData().equals("f"));

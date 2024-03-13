@@ -48,7 +48,7 @@ public class ParserEnv {
                 Functions.put(CurrentList.get(1), ASTGenerator(CurrentList));
                 break;
             case "setq":
-                SetVariable(CurrentList);
+                LogicalOrder.add(ASTGenerator(CurrentList));
                 break;
             case "cond":
                 LogicalOrder.add(ASTGenerator(CurrentList));
@@ -105,6 +105,29 @@ public class ParserEnv {
                     CurrentAST.addChild(ASTGenerator(NestedLists.get(token)));
                 }
                 break;
+            case "setq":
+                /*
+                 *                            en el orden logico solo saldra esto
+                 *                                         setq
+                 *                                          |
+                 *                                         Variable
+                 *                                          |
+                 *                                     Numero de vez que se vuelva a setear   #Para buscar el valor en el hashmap y dentro de la lista linkeada
+                 */
+                if (Variables.containsKey(CurrentList.get(1))){
+                    // Si la variable ya existe, le mete la nueva cantidad de veces que se setea
+                    CurrentAST = new AST<String>(CurrentList.get(0));
+                    CurrentAST.addChild(new AST<String>(CurrentList.get(1)));
+                    CurrentAST.addChild(new AST<String>(String.valueOf(Variables.get(CurrentList.get(1)).size())));
+                    SetVariable(CurrentList);
+                }
+                else{
+                    // Si la variable no existe, la crea y le mete el valor
+                    CurrentAST = new AST<String>(CurrentList.get(0));
+                    CurrentAST.addChild(new AST<String>(CurrentList.get(1)));
+                    CurrentAST.addChild(new AST<String>(String.valueOf(0)));
+                    SetVariable(CurrentList);
+                }
             default:
                 /*
                  * La logica basica de los ADT es sencilla
@@ -112,7 +135,6 @@ public class ParserEnv {
                  *      /       |       \       \
                  *    hijo1  hijo2     hijo3  hijo4 #Suvecivamente
                  */
-                System.out.println("CurrentList: " + CurrentList.toString());
                 if (NestedLists.containsKey(CurrentList.get(0))){
                     CurrentAST = ASTGenerator(NestedLists.get(CurrentList.get(0)));
                 }
