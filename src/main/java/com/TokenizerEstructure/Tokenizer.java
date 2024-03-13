@@ -38,7 +38,7 @@ public class Tokenizer {
                         value.add(token);
                         if (token.contains(")")) {
                             nestedExpressions++;
-                            String key = "Expression" + nestedExpressions;
+                            String key = Integer.toString(value.hashCode());
                             rightParentheses++;
                             isParenthesesClosed = true;
                             expresionesAnhidadas.put(key, value);
@@ -75,7 +75,7 @@ public class Tokenizer {
     }
 
     public static void main(String[] args) {
-        String input = "(defun add (x y) (+ x y) (+ 1 2))";
+        String input = "(defun add (x y) (+ x y))";
         ArrayList<String> tokens = tokenize(input);
         System.out.println(tokens);
     }

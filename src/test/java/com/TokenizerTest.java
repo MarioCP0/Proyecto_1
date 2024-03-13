@@ -21,7 +21,7 @@ public class TokenizerTest {
     @Test
     public void testTokenizeNestedExpressions() {
         String input = "(+ 1 (* 2 3) 4 )";
-        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "Expression1","4", ")"));
+        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "66870885","4", ")"));
         ArrayList<String> actual = Tokenizer.tokenize(input);
         assertEquals(expected, actual);
     }
@@ -53,11 +53,11 @@ public class TokenizerTest {
     @Test
     public void testTokenHashMap() {
         String input = "(+ 1 (* 2 3) 4 )";
-        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "Expression1","4", ")"));
+        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "66870885","4", ")"));
         ArrayList<String> actual = Tokenizer.tokenize(input);
         assertEquals(expected, actual);
         
-        ArrayList<String> expression1 = Tokenizer.expresionesAnhidadas.get("Expression1");
+        ArrayList<String> expression1 = Tokenizer.expresionesAnhidadas.get("66870885");
         ArrayList<String> expectedExpression1 = new ArrayList<>(Arrays.asList("(","*", "2", "3", ")"));
         assertEquals(expectedExpression1, expression1);
     }
