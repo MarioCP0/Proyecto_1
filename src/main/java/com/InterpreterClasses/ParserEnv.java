@@ -53,7 +53,7 @@ public class ParserEnv {
             case "defun":
                 /*
                  *  ADT GOES LIKE THIS 
-                 *                          function name
+                 *                          HASH del pArametro #TEMAS DE COMPLEJIDAD
                  *     /        /       |                   \                    \        
                  *   param1 param2    ...           primer operando de parentesis    segundo operando        #parametros con el primer operando
                  */
