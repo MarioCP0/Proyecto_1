@@ -51,10 +51,15 @@ public class ParserEnv {
         AST<String> CurrentAST = null; // Initialize CurrentAST with a default value
         switch (CurrentList.get(0)) {
             case "defun":
-                // TODO: Implementar la creacion de funciones
+                /*
+                 *  ADT GOES LIKE THIS 
+                 *                          function name
+                 *     /        /       |                   \                    \        
+                 *   param1 param2    ...           primer operando de parentesis    segundo operando        #parametros con el primer operando
+                 */
                 boolean ParamatersAdded = false;
 
-                CurrentList.remove(0);
+                CurrentList.remove(0);                                               
                 CurrentAST = new AST<String>(CurrentList.get(1));
                 CurrentList.remove(0);
     

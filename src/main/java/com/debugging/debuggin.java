@@ -15,7 +15,7 @@ public class debuggin {
         NestedLists.put("parameters", new ArrayList<String>(Arrays.asList("x", "y")));
         NestedLists.put("addition", new ArrayList<String>(Arrays.asList("+", "x", "y")));
         ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
-        tokens.add(new ArrayList<String>(Arrays.asList("defun", "add", "parameters", "addition")));
+        tokens.add(new ArrayList<String>(Arrays.asList("defun", "add", "parameters", "addition" )));
         ParserEnv parser = new ParserEnv(NestedLists);
         System.out.println("NestedLists: " + NestedLists.toString());
 
