@@ -7,13 +7,13 @@ import java.util.Map;
 
 public class Tokenizer {
 
-    public static boolean isParenthesesClosed = true;
-    public static Map<String, ArrayList<String>> expresionesAnhidadas = new HashMap<String, ArrayList<String>>() ;
-    public static int leftParentheses = 0;
-    public static int rightParentheses = 0;
-    public static int nestedExpressions = 0;
+    public  boolean isParenthesesClosed = true;
+    public  Map<String, ArrayList<String>> expresionesAnhidadas = new HashMap<String, ArrayList<String>>() ;
+    public  int leftParentheses = 0;
+    public  int rightParentheses = 0;
+    public  int nestedExpressions = 0;
 
-    public static ArrayList<String> tokenize(String input) {
+    public  ArrayList<String> tokenize(String input) {
         
         ArrayList<String> tokens = new ArrayList<>();
 
@@ -75,7 +75,7 @@ public class Tokenizer {
     }
 
     public static void main(String[] args) {
-        String input = "(defun fibonacci (n)(cond ((<= n 1) n)(t (+ (fibonacci (- n 1))(fibonacci (- n 2))))))";
+        String input = "(defun add (x y) (+ x y))";
         ArrayList<String> tokens = tokenize(input);
         System.out.println(tokens);
     }
