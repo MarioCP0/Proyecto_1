@@ -75,7 +75,7 @@ public class Tokenizer {
     }
 
     public static void main(String[] args) {
-        String input = "(defun add (x y) (+ x y))";
+        String input = "(defun fibonacci (n)(cond ((<= n 1) n)(t (+ (fibonacci (- n 1))(fibonacci (- n 2))))))";
         ArrayList<String> tokens = tokenize(input);
         System.out.println(tokens);
     }
