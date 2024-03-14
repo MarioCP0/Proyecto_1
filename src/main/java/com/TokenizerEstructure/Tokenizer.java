@@ -7,13 +7,13 @@ import java.util.Map;
 
 public class Tokenizer {
 
-    public  boolean isParenthesesClosed = true;
-    public  Map<String, ArrayList<String>> expresionesAnhidadas = new HashMap<String, ArrayList<String>>() ;
-    public  int leftParentheses = 0;
-    public  int rightParentheses = 0;
-    public  int nestedExpressions = 0;
+    public static  boolean isParenthesesClosed = true;
+    public static  Map<String, ArrayList<String>> expresionesAnhidadas = new HashMap<String, ArrayList<String>>() ;
+    public static  int leftParentheses = 0;
+    public static  int rightParentheses = 0;
+    public static  int nestedExpressions = 0;
 
-    public  ArrayList<String> tokenize(String input) {
+    public static  ArrayList<String> tokenize(String input) {
         
         ArrayList<String> tokens = new ArrayList<>();
 
@@ -76,7 +76,7 @@ public class Tokenizer {
 
     public static void main(String[] args) {
         String input = "(defun add (x y) (+ x y))";
-        ArrayList<String> tokens = tokenize(input);
+        ArrayList<String> tokens = Tokenizer.tokenize(input);
         System.out.println(tokens);
     }
 
