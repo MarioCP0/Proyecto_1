@@ -70,21 +70,22 @@ public class ParserEnv {
                  *              /        /       |                   \                    \        
                  *          param1 param2    ...                primer operando    segundo operando        #parametros con el primer operando
                  */
-                boolean ParamatersAdded = false;
-
-                CurrentList.remove(0);                                               
+                
+                CurrentList.remove(0); 
                 CurrentAST = new AST<String>(CurrentList.get(1));
                 CurrentList.remove(0);
+
+                for (String token : NestedLists.get(CurrentList.get(0))){ // Agrega los parametros
+                    CurrentAST.addChild(new AST<String>(token));
+                }
+                CurrentList.remove(0); // Dejamos todo vacio hasta llegar al primer parentesis (la regla de oro del cero de pedro) NOTE: me invente el termino
     
                 for (String token: CurrentList){
-                    if (!ParamatersAdded){
-                        // Add all 
-                        ParamatersAdded = true;
+                    if (NestedLists.containsKey(token)){
+                        CurrentAST.addChild(ASTGenerator(NestedLists.get(token)));
                     }
-                    if (ParamatersAdded && NestedLists.containsKey(token)){
-                        for (String parameter : NestedLists.get(token)){
-                            CurrentAST.addChild(new AST<String>(parameter));
-                        }
+                    else{
+                        CurrentAST.addChild(new AST<String>(token));
                     }
                 }
                 break;

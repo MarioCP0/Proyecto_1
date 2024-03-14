@@ -181,6 +181,7 @@ public class ParsingExpression {
         HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
         NestedLists.put("parameters", new ArrayList<String>(Arrays.asList("x", "y")));
         NestedLists.put("addition", new ArrayList<String>(Arrays.asList("+", "x", "y")));
+        NestedLists.put("#2", new ArrayList<String>(Arrays.asList("x", "x", "x", "x")));
         ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
         tokens.add(new ArrayList<String>(Arrays.asList("defun", "add", "parameters", "addition")));
         ParserEnv parser = new ParserEnv(NestedLists);

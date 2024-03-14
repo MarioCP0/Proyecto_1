@@ -3,6 +3,7 @@ package com;
 import org.junit.Test;
 
 import com.InterpreterClasses.ParserEnv;
+import com.ParsingEstructures.AST;
 import com.Evaluator;
 import static org.junit.Assert.assertTrue;
 
@@ -42,19 +43,50 @@ public class TestExpressions {
     public void THEFINALBOSS_THEFIBONACCI(){
         HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
         ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
-        ParserEnv parser = new ParserEnv(NestedLists);
+        tokens.add(new ArrayList<String>(Arrays.asList("defun", "fib", "#1", "#2")));
+        NestedLists.put("#1", new ArrayList<String>(Arrays.asList("n")));
+        NestedLists.put("#2", new ArrayList<String>(Arrays.asList("cond", "#3", "#4", "#5")));
+        NestedLists.put("#3", new ArrayList<String>(Arrays.asList("=", "n", "0")));
+        NestedLists.put("#4", new ArrayList<String>(Arrays.asList("=", "n", "1")));
+        NestedLists.put("#5", new ArrayList<String>(Arrays.asList("t", "#6")));
+        NestedLists.put("#6", new ArrayList<String>(Arrays.asList("+", "#7", "#8")));
+        NestedLists.put("#7", new ArrayList<String>(Arrays.asList("fib", "#9")));
+        NestedLists.put("#8", new ArrayList<String>(Arrays.asList("fib", "#10")));
+        NestedLists.put("#9", new ArrayList<String>(Arrays.asList("-", "n", "1")));
+        NestedLists.put("#10", new ArrayList<String>(Arrays.asList("-", "n", "2")));
         
+        ParserEnv parser = new ParserEnv(NestedLists);
+        System.out.println("NestedLists: " + NestedLists.toString());
         for (ArrayList<String> token : tokens){
             parser.Parsing(token);
         }
+
         Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables(), parser.getLogicalOrder());
         // assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals(55));
         // Gimme the parse of the function
-        System.out.println(parser.getFunctions().get("fib").getRoot().getData());
+        AST<String> parsedExpression = parser.getFunctions().get("fib"); 
+        for (AST<String> child : parsedExpression.getChildren()){
+            System.out.println("Child: " + child.getRoot().getData());
+            for (AST<String> grandChild : child.getChildren()){
+                System.out.println("GrandChild: " + grandChild.getRoot().getData());
+                for (AST<String> grandGrandChild : grandChild.getChildren()){
+                    System.out.println("GrandGrandChild: " + grandGrandChild.getRoot().getData());
+                    for (AST<String> grandGrandGrandChild : grandGrandChild.getChildren()){
+                        System.out.println("GrandGrandGrandChild: " + grandGrandGrandChild.getRoot().getData());
+                        for (AST<String> grandGrandGrandGrandChild : grandGrandGrandChild.getChildren()){
+                            System.out.println("GrandGrandGrandGrandChild: " + grandGrandGrandGrandChild.getRoot().getData());
+                            for (AST<String> grandGrandGrandGrandGrandChild : grandGrandGrandGrandChild.getChildren()){
+                                System.out.println("GrandGrandGrandGrandGrandChild: " + grandGrandGrandGrandGrandChild.getRoot().getData());
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         /*
          *         te va dolver algo tal que asi el parser
-         *     function["fib"] =       HASHDELOSPARAMETROS
+         *     function["fib"] =         HASHDELOSPARAMETROS
          *                              /               \    
          *                             n               cond
          *                                     /        |       \
