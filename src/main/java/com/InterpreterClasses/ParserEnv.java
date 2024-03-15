@@ -52,7 +52,7 @@ public class ParserEnv {
                 break;
             case "cond":
                 LogicalOrder.add(ASTGenerator(CurrentList));
-                break; // imma fucking imbecil fr
+                break; // imma fucking imbecile fr
             default:
                 LogicalOrder.add(ASTGenerator(CurrentList));
                 break;
@@ -61,7 +61,7 @@ public class ParserEnv {
     
 
     public AST<String> ASTGenerator(ArrayList<String> CurrentList){ // The public is for testing purposes (Change it later to private)
-        AST<String> CurrentAST = null; // Initialize CurrentAST with a default value
+        AST<String> CurrentAST = null;
         switch (CurrentList.get(0)) {
             case "defun":
                 /*
@@ -145,7 +145,6 @@ public class ParserEnv {
                 CurrentList.remove(0); // Elimina el primer elemento de la lista
                 for (String token : CurrentList){
                     if (NestedLists.containsKey(token)){
-                        // Print the token that follows
                         CurrentAST.addChild(ASTGenerator(NestedLists.get(token)));
                     }
                     else{
