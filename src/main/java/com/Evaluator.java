@@ -20,7 +20,6 @@ public class Evaluator {
 
     public String evaluate(AST<String> ast) {
         Node<String> root = ast.getRoot();
-        ArrayList<AST<String>> children = ast.getChildren();
 
         switch (root.getData()) {
             case "defun":
@@ -29,57 +28,29 @@ public class Evaluator {
             case "setq":
                 // evaluar variable
                 break;
+            case "cond":
+                // Evaluar cuando es condicional
             default:
-                // Evaluación de otras expresiones
                 return evaluateExpression(ast);
         }
 
-        return ""; // resultado
+        return null; // resultado
     }
 
-    private String evaluateExpression(AST<String> ast) {
+    public String evaluateExpression(AST<String> ast) {
         Node<String> root = ast.getRoot();
         ArrayList<AST<String>> children = ast.getChildren();
 
-        String operator = root.getData();
-        LinkedList<Integer> operands = new LinkedList<>();
-
-        // TODO: que esto tenga recursividad, osea que pueda evaluar expresiones anidadas
-
-        
-        for (AST<String> child : children) {
-            String data = child.getRoot().getData();
-            if (isNumeric(data)) {
-                operands.add(Integer.parseInt(data));
-            } else if (variables.containsKey(data)) {
-                operands.add(Integer.parseInt(variables.get(data).getFirst())); //TODO: cambiar esto 
-            } else {
-                // cualquier otro caso
-            }
-        }
-
-        // Realiza operación en base a el operando
-        switch (operator) {
-            case "+":
-
-            case "-":
-
-                break;
-            case "*":
-
-                break;
-
-            default:
-
-                break;
-        }
-
-        return "";
+        // THIS NEEDS TO BE CHANGED for for the time
+        if (root.getData().equals("+")) {
+            // TODO chequear si hay mas arboles anidados
+            System.out.println("Evaluating +" + children.get(0) + " " + children.get(1));
+            int result = Integer.parseInt(children.get(0).getRoot().getData()) + Integer.parseInt(children.get(1).getRoot().getData());
+            return Integer.toString(result);
+        } 
+        return null;
     }
 
-    private boolean isNumeric(String str) {
-        return str.matches("-?\\d+(\\.\\d+)?");
-    }
 }
 
 
