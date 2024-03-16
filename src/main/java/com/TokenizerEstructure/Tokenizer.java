@@ -1,84 +1,113 @@
 package com.TokenizerEstructure;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
-
+/**
+ * La clase Tokenizer se utiliza para tokenizar una cadena de entrada en una lista de tokens.
+ * También se encarga de encontrar y almacenar las expresiones anidadas en un HashMap.
+ * Los tokens se almacenan en un ArrayList.
+ */
 public class Tokenizer {
 
-    public static  boolean isParenthesesClosed = true;
-    public static  Map<String, ArrayList<String>> expresionesAnhidadas = new HashMap<String, ArrayList<String>>() ;
-    public static  int leftParentheses = 0;
-    public static  int rightParentheses = 0;
-    public static  int nestedExpressions = 0;
+    public static boolean isParenthesesClosed = true;
+    public static ArrayList<String> tokensAsArray = new ArrayList<>();
+    public static Map<String, ArrayList<String>> expresionesAnhidadas = new HashMap<String, ArrayList<String>>();
+    public static Map<Integer, Integer> matchingParentheses = new TreeMap<>();
+    public static boolean continueProgram = true;
 
-    public static  ArrayList<String> tokenize(String input) {
-        
-        ArrayList<String> tokens = new ArrayList<>();
+    /**
+     * Tokeniza una cadena de entrada en una lista de tokens.
+     * 
+     * @param input la cadena de entrada a tokenizar
+     * @return una lista de tokens
+     */
+    public  ArrayList<String> tokenize(String input) {
 
-        String[] split = input.split("\\s+|(?<=\\()|(?=\\))");
-        
-        for (int i = 0; i < split.length; i++) {
-            String token = split[i];
+        ArrayList<String> tokens = new ArrayList<>(); // Aquí se guardan los tokens
+        addTokensToArrayList(input, tokensAsArray); // Se agregan los tokens a un tokenAsArray
 
-            if (!isParenthesesClosed) {
-                
-                if (token.contains("(")) {
-                    ArrayList<String> value = new ArrayList<String>();
-                    value.add(token);
-                    leftParentheses++;
-                    
-                    while (!isParenthesesClosed) {
-                        i++;
-                        if (i >= split.length) {
-                            break;
-                        }
-                        token = split[i];
-                        value.add(token);
-                        if (token.contains(")")) {
-                            nestedExpressions++;
-                            String key = Integer.toString(value.hashCode());
-                            rightParentheses++;
-                            isParenthesesClosed = true;
-                            expresionesAnhidadas.put(key, value);
-                            tokens.add(key);
-                            token = token.replace(")", "");
-                        }
-                    }
-                }
-                isParenthesesClosed = false;
+        while (continueProgram){
+
+
+            matchingParentheses = ParenthesesMatcher.findMatchingParentheses(tokensAsArray); // Se buscan los paréntesis anidados
+
+            // Create a copy of the matchingParentheses map
+            Map<Integer, Integer> tempMathchingParentheses = new TreeMap<>(Collections.reverseOrder());
+            tempMathchingParentheses.putAll(matchingParentheses);
+
+            Map.Entry<Integer, Integer> entry = tempMathchingParentheses.entrySet().iterator().next(); // Se obtiene el primer par de paréntesis anidados
+            Integer start = entry.getKey(); // Se obtiene el índice del paréntesis de apertura
+            Integer end = entry.getValue(); // Se obtiene el índice del paréntesis de cierre
+
+            addExpressionToMap(start, end); // Se agrega la expresión anidada al HashMap expresionesAnhidadas
+
+            if (matchingParentheses.isEmpty()) {
+                continueProgram = false;
             }
-
-            if (token.equals("(")) {
-                isParenthesesClosed = false;
-                tokens.add("(");
-                token = token.replace("(", "");
-                leftParentheses++;
-            }
-            else if (token.equals(")")) {
-                isParenthesesClosed = true;
-                tokens.add(")");
-                token = token.replace(")", "");
-                rightParentheses++;
-            }
-            else  {
-                if (token != ""){
-                    tokens.add(token);
-                }
-                
-            }
-
         }
+
+        tokens.addAll(tokensAsArray);
+
 
         return tokens;
     }
 
-    public static void main(String[] args) {
-        String input = "(defun add (x y) (+ x y))";
-        ArrayList<String> tokens = Tokenizer.tokenize(input);
-        System.out.println(tokens);
+    /**
+     * Agrega todos los tokens de entrada a un ArrayList.
+     * 
+     * @param input La cadena de entrada que contiene los tokens.
+     * @param tokensAsArray El ArrayList donde se agregarán los tokens.
+     * @return El ArrayList con los tokens agregados.
+     */
+    public static ArrayList<String> addTokensToArrayList(String input, ArrayList<String> tokensAsArray) { // Este método agrega todos los tokens a un ArrayList
+        String[] split = input.split("\\s+|(?<=\\()|(?=\\))"); 
+
+        for (String s : split) {
+            if (s.equals("")) {
+                continue;
+            }
+            tokensAsArray.add(s);
+        }
+        return tokensAsArray;
     }
 
+    /**
+     * Agrega una expresión anidada al mapa de expresiones.
+     * 
+     * @param start el índice de inicio de la expresión en la lista de tokens
+     * @param end el índice de fin de la expresión en la lista de tokens
+     * @throws IllegalArgumentException si los índices de inicio o fin son inválidos
+     */
+    public static void addExpressionToMap(int start, int end) {
+        if (start < 0 || start >= tokensAsArray.size() || end < 0 || end >= tokensAsArray.size()) { // aqui se verifica que los indices sean validos
+            throw new IllegalArgumentException("Invalid start or end index");
+        }
+
+        ArrayList<String> expression = new ArrayList<>(); // en esta lista se guardan la expresion anidada , que se agregara al HashMap
+        List<Integer> indicesToRemove = new ArrayList<>(); // los valores que se eliminaran del ArrayList tokensAsArray original
+
+        for (int i = start; i <= end; i++) { // se recorre el ArrayList tokensAsArray basado en los indices start y end dados por el HashMap matchingParentheses
+            expression.add(tokensAsArray.get(i)); // se agrega el token al ArrayList expression
+                indicesToRemove.add(i); // Se agrega a los valores que se removeran
+            }
+
+            String key = String.valueOf(expression.hashCode()); // se genera un key para el HashMap expresionesAnhidadas
+            expresionesAnhidadas.put(key, expression); // se agrega la expresion anidada al HashMap expresionesAnhidadas
+
+            // Se eliminan los tokens de tokensAsArray que se agregaron a expression
+        for (int j = indicesToRemove.size() - 1; j >= 0; j--) {
+                tokensAsArray.remove((int) indicesToRemove.get(j));
+            }
+
+            tokensAsArray.add(start, key); // se agrega el Hash code a la posicion donde estaba la expresión anidada
+            matchingParentheses.clear(); // se limpia el HashMap matchingParentheses para que se busque el match de parentesis con el nuevo ArrayList tokensAsArray
+            matchingParentheses = ParenthesesMatcher.findMatchingParentheses(tokensAsArray); // se busca el match de parentesis con el nuevo ArrayList tokensAsArray
+
+    }
 
 }

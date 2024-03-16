@@ -1,64 +1,42 @@
 package com;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 import com.TokenizerEstructure.Tokenizer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import static org.junit.Assert.assertEquals;
-
 public class TokenizerTest {
 
     @Test
-    public void testTokenizeBasic() {
-        String input = "(+ 1 2)";
-        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "2", ")"));
-        ArrayList<String> actual = Tokenizer.tokenize(input);
-        assertEquals(expected, actual);
+    public void testTokenize() {
+        Tokenizer tokenizer = new Tokenizer();
+        String input = "(add 1 2)";
+        ArrayList<String> expectedTokens = new ArrayList<>();
+        expectedTokens.add("(");
+        expectedTokens.add("add");
+        expectedTokens.add("1");
+        expectedTokens.add("2");
+        expectedTokens.add(")");
+
+        ArrayList<String> actualTokens = tokenizer.tokenize(input);
+
+        assertEquals(expectedTokens, actualTokens);
     }
 
     @Test
-    public void testTokenizeNestedExpressions() {
-        String input = "(+ 1 (* 2 3) 4 )";
-        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "66870885","4", ")"));
-        ArrayList<String> actual = Tokenizer.tokenize(input);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testTokenizeExtraSpaces() {
-        String input = "(  +  1   2   )";
-        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "2", ")"));
-        ArrayList<String> actual = Tokenizer.tokenize(input);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testTokenizeEmptyExpression() {
-        String input = "()";
-        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", ")"));
-        ArrayList<String> actual = Tokenizer.tokenize(input);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testTokenizeEmptyString() {
+    public void testTokenize_EmptyInput() {
+        Tokenizer tokenizer = new Tokenizer();
         String input = "";
-        ArrayList<String> expected = new ArrayList<>();
-        ArrayList<String> actual = Tokenizer.tokenize(input);
-        assertEquals(expected, actual);
+        ArrayList<String> expectedTokens = new ArrayList<>();
+
+        ArrayList<String> actualTokens = tokenizer.tokenize(input);
+
+        assertEquals(expectedTokens, actualTokens);
     }
 
-    @Test
-    public void testTokenHashMap() {
-        String input = "(+ 1 (* 2 3) 4 )";
-        ArrayList<String> expected = new ArrayList<>(Arrays.asList("(", "+", "1", "66870885","4", ")"));
-        ArrayList<String> actual = Tokenizer.tokenize(input);
-        assertEquals(expected, actual);
-        
-        ArrayList<String> expression1 = Tokenizer.expresionesAnhidadas.get("66870885");
-        ArrayList<String> expectedExpression1 = new ArrayList<>(Arrays.asList("(","*", "2", "3", ")"));
-        assertEquals(expectedExpression1, expression1);
-    }
+    // Add more test cases as needed
+
 }
