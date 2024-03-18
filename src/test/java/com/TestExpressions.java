@@ -86,27 +86,6 @@ public class TestExpressions {
         }
 
         Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables(), parser.getLogicalOrder());
-        // assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals(55));
-        // Gimme the parse of the function
-        // AST<String> parsedExpression = parser.getFunctions().get("fib"); 
-        // for (AST<String> child : parsedExpression.getChildren()){
-        //     System.out.println("Child: " + child.getRoot().getData());
-        //     for (AST<String> grandChild : child.getChildren()){
-        //         System.out.println("GrandChild: " + grandChild.getRoot().getData());
-        //         for (AST<String> grandGrandChild : grandChild.getChildren()){
-        //             System.out.println("GrandGrandChild: " + grandGrandChild.getRoot().getData());
-        //             for (AST<String> grandGrandGrandChild : grandGrandChild.getChildren()){
-        //                 System.out.println("GrandGrandGrandChild: " + grandGrandGrandChild.getRoot().getData());
-        //                 for (AST<String> grandGrandGrandGrandChild : grandGrandGrandChild.getChildren()){
-        //                     System.out.println("GrandGrandGrandGrandChild: " + grandGrandGrandGrandChild.getRoot().getData());
-        //                     for (AST<String> grandGrandGrandGrandGrandChild : grandGrandGrandGrandChild.getChildren()){
-        //                         System.out.println("GrandGrandGrandGrandGrandChild: " + grandGrandGrandGrandGrandChild.getRoot().getData());
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
 
         /*
          *         te va dolver algo tal que asi el parser

@@ -2,13 +2,12 @@ package com.TokenizerClasses;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class Tokenizer {
 
     public  boolean isParenthesesClosed = true;
-    public  Map<String, ArrayList<String>> expresionesAnhidadas = new HashMap<String, ArrayList<String>>() ;
+    public  HashMap<String, ArrayList<String>> expresionesAnhidadas = new HashMap<String, ArrayList<String>>() ;
     public  int leftParentheses = 0;
     public  int rightParentheses = 0;
     public  int nestedExpressions = 0;
