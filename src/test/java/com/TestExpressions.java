@@ -2,9 +2,10 @@ package com;
 
 import org.junit.Test;
 
+import com.InterpreterClasses.Evaluator;
 import com.InterpreterClasses.ParserEnv;
 import com.ParsingEstructures.AST;
-import com.Evaluator;
+
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
