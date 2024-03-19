@@ -65,6 +65,12 @@ public class ParsingExpression {
         System.out.println("Variables: " + parser.getVariables().toString());
         assertTrue(parser.getVariables().get("x").getFirst().equals("2"));
         assertTrue(parser.getVariables().get("y").getFirst().equals("3"));
+        for (String key : parser.getVariables().keySet()) {
+            System.out.println("Variable: " + key);
+            for (String value : parser.getVariables().get(key)){
+                System.out.println("Value: " + value);
+            }
+        }
 
     }
 

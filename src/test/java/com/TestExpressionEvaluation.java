@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Arrays;
 
-public class TestExpressions {
+public class TestExpressionEvaluation {
     @Test
     public void testSimpleExpressions() {
         HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
@@ -23,8 +23,8 @@ public class TestExpressions {
         for (ArrayList<String> token : tokens){
             parser.Parsing(token);
         }
-        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables(), parser.getLogicalOrder());
-        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("7")); //TODO: Tenes que cambiar cosas del programa, esto solo fue para que se viera bonis
+        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables() );
+        System.out.println(evaluator.evaluate(parser.getLogicalOrder().get(0))); //TODO: Tenes que cambiar cosas del programa, esto solo fue para que se viera bonis
         // EL EVALUATOR, EL TESTO NO CAMBIAR
 
         /*
@@ -34,7 +34,7 @@ public class TestExpressions {
          *                  3     4
          *          El resultado debe de ser 7 :D ()
          */ 
-        
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("7.0"));
     }
     @Test
     public void testExpressionsEvaluation() {
@@ -49,7 +49,7 @@ public class TestExpressions {
         for (ArrayList<String> token : tokens){
             parser.Parsing(token);
         }
-        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables(), parser.getLogicalOrder());
+        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables());
         // TODO: CHAMBEAR
         /*
          *          te va dolver algo tal que asi el parser
@@ -60,8 +60,65 @@ public class TestExpressions {
          *                2   3  7   3    
          *          El resultado debe de ser 15 :D ()
          */ 
-        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals(15));              
+        System.out.println(evaluator.evaluate(parser.getLogicalOrder().get(0)));
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("15.0"));
+    }
+    @Test 
+    public void TestExpressionOneAfterTheOther(){
+        HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
+        ParserEnv parser = new ParserEnv(NestedLists);
+
+        ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
+        tokens.add(new ArrayList<String>(Arrays.asList("+", "3", "3")));
+        tokens.add(new ArrayList<String>(Arrays.asList("+", "3", "4")));
+
+        for (ArrayList<String> token : tokens){
+            parser.Parsing(token);
+        }
+
+        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables());
+        System.out.println(evaluator.evaluate(parser.getLogicalOrder().get(0)));
+        System.out.println(evaluator.evaluate(parser.getLogicalOrder().get(1)));
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("6.0"));
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(1)).equals("7.0"));
+
+    }
+    @Test
+    public void TestingWithSetVariables(){
+        HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
+        ParserEnv parser = new ParserEnv(NestedLists);
+        ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
+        tokens.add(new ArrayList<String>(Arrays.asList("setq", "x", "3")));
+        tokens.add(new ArrayList<String>(Arrays.asList("setq", "y", "4")));
+        tokens.add(new ArrayList<String>(Arrays.asList("+", "x", "y")));
         
+        for (ArrayList<String> token : tokens){
+            parser.Parsing(token);
+        }
+        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables());
+        for (AST<String> ast : parser.getLogicalOrder()){
+            System.out.println(evaluator.evaluate(ast));
+        }
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(2)).equals("7.0"));
+
+    }
+    @Test
+    public void TestingWithSetVariablesButTwice(){
+        HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
+        ParserEnv parser = new ParserEnv(NestedLists);
+        ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
+        tokens.add(new ArrayList<String>(Arrays.asList("setq", "x", "3")));
+        tokens.add(new ArrayList<String>(Arrays.asList("setq", "x", "4")));
+        tokens.add(new ArrayList<String>(Arrays.asList("*", "x", "x")));
+        
+        for (ArrayList<String> token : tokens){
+            parser.Parsing(token);
+        }
+        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables());
+        for (AST<String> ast : parser.getLogicalOrder()){
+            System.out.println(evaluator.evaluate(ast));
+        }
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(2)).equals("16.0"));
     }
     @Test 
     public void THEFINALBOSS_THEFIBONACCI(){
@@ -85,7 +142,7 @@ public class TestExpressions {
             parser.Parsing(token);
         }
 
-        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables(), parser.getLogicalOrder());
+        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables());
 
         /*
          *         te va dolver algo tal que asi el parser

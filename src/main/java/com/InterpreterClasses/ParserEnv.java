@@ -53,7 +53,7 @@ public class ParserEnv {
             case "cond":
                 LogicalOrder.add(ASTGenerator(CurrentList));
                 break; // imma fucking imbecile fr
-            default:
+            default: 
                 LogicalOrder.add(ASTGenerator(CurrentList));
                 break;
         }
