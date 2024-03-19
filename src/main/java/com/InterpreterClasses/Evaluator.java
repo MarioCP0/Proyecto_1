@@ -30,8 +30,6 @@ public class Evaluator {
                     TimeVariableHaveBeenSet.put(ast.getChildren().get(0).getRoot().getData(), 0);
                 }
                 break;
-            case "cond":
-                // Evaluar cuando es condicional
             default:
                 return evaluateExpression(ast);
         }
@@ -40,10 +38,13 @@ public class Evaluator {
     }
 
     // TODO: Needs Refactoring, put for evaluation of functions
-    public String evaluateExpression(AST<String> ast) {
+    private String evaluateExpression(AST<String> ast) {
         Node<String> root = ast.getRoot();
         ArrayList<AST<String>> children = ast.getChildren();
 
+        if (root.getData().equals("cond")){
+            return EvaluatingCond(ast);
+        }
         if (root.getData().equals("+")) {
             float result = 0;
             for (AST<String> child : children) {
@@ -96,10 +97,43 @@ public class Evaluator {
             }
             return Float.toString(result);
         }
-        return null;
+        return root.getData();
     }
 
-    public void TimeVariableSet(String key) {
+    private String EvaluatingCond(AST<String> ast) {
+        for (AST<String> child : ast.getChildren()){
+            if (child.getRoot().getData().equals("t")){
+                return evaluateExpression(child.getChildren().get(0));
+            }
+            if (child.getRoot().getData().equals("=")){
+                if (evaluateExpression(child.getChildren().get(0)).equals(evaluateExpression(child.getChildren().get(1)))){
+                    return evaluateExpression(child.getChildren().get(2));
+                }
+            }
+            if (child.getRoot().getData().equals(">=")){
+                if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) >= Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
+                    return evaluateExpression(child.getChildren().get(2));
+                }
+            }
+            if (child.getRoot().getData().equals("<=")){
+                if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) <= Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
+                    return evaluateExpression(child.getChildren().get(2));
+                }
+            }
+            if (child.getRoot().getData().equals(">")){
+                if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) > Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
+                    return evaluateExpression(child.getChildren().get(2));
+                }
+            }
+            if (child.getRoot().getData().equals("<")){
+                if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) < Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
+                    return evaluateExpression(child.getChildren().get(2));
+                }
+            }
+        }
+        return null;
+    }
+    private void TimeVariableSet(String key) {
         TimeVariableHaveBeenSet.put(key, TimeVariableHaveBeenSet.get(key) + 1);
     }
 
