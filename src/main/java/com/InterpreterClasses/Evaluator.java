@@ -49,6 +49,7 @@ public class Evaluator {
             return EvaluatingCond(ast);
         }
         if (functions.containsKey(root.getData())) {
+            System.out.println("Functions: " + root.getData());
             return EvaluatingFunction(functions.get(root.getData()), ast);
         }
         if (root.getData().equals("+")) {
@@ -137,20 +138,18 @@ public class Evaluator {
         return root.getData();
     }
 
-    // TODO: REFACTOR ALL THE COND (JUST THE FUNCTION PART FOR THE RECURSIVE FUNCTIONS)
+    // TODO: REFACTOR ALL THE COND (ONE TEST WORKS BUT NEEDS TO BE TESTED MORE)
     private String EvaluatingCond(AST<String> ast) {
         for (AST<String> child : ast.getChildren()){
             if (child.getRoot().getData().equals("t")){
+                System.out.println("T: " + child.getChildren().get(0).getRoot().getData());
                 return evaluateExpression(child.getChildren().get(0));
             }
             if (child.getRoot().getData().equals("=")){
                 if (functionVariables.containsKey(child.getChildren().get(0).getRoot().getData()) && functionVariables.containsKey(child.getChildren().get(1).getRoot().getData())) {
-                    System.out.println("Key: " + child.getChildren().get(0).getRoot().getData());
-                    System.out.println("Value: " + functionVariables.get(child.getChildren().get(0).getRoot().getData()));
                     if (Float.parseFloat(functionVariables.get(child.getChildren().get(0).getRoot().getData())) == Float.parseFloat(functionVariables.get(child.getChildren().get(1).getRoot().getData()))){ //TODO: change this for having case variable number and like that
                         return evaluateExpression(child.getChildren().get(2));
                     }
-                    continue;
                 }
                 else if (functionVariables.containsKey(child.getChildren().get(0).getRoot().getData()) && !functionVariables.containsKey(child.getChildren().get(1).getRoot().getData())) {
                     if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) == Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
@@ -165,8 +164,6 @@ public class Evaluator {
             }
             if (child.getRoot().getData().equals(">=")){
                 if (functionVariables.containsKey(child.getChildren().get(0).getRoot().getData()) && functionVariables.containsKey(child.getChildren().get(1).getRoot().getData())) {
-                    System.out.println("Key: " + child.getChildren().get(0).getRoot().getData());
-                    System.out.println("Value: " + functionVariables.get(child.getChildren().get(0).getRoot().getData()));
                     if (Float.parseFloat(functionVariables.get(child.getChildren().get(0).getRoot().getData())) >= Float.parseFloat(functionVariables.get(child.getChildren().get(1).getRoot().getData()))){
                         return evaluateExpression(child.getChildren().get(2));
                     }
@@ -179,8 +176,6 @@ public class Evaluator {
             }
             if (child.getRoot().getData().equals("<=")){
                 if (functionVariables.containsKey(child.getChildren().get(0).getRoot().getData()) && functionVariables.containsKey(child.getChildren().get(1).getRoot().getData())) {
-                    System.out.println("Key: " + child.getChildren().get(0).getRoot().getData());
-                    System.out.println("Value: " + functionVariables.get(child.getChildren().get(0).getRoot().getData()));
                     if (Float.parseFloat(functionVariables.get(child.getChildren().get(0).getRoot().getData())) <= Float.parseFloat(functionVariables.get(child.getChildren().get(1).getRoot().getData()))){
                         return evaluateExpression(child.getChildren().get(2));
                     }

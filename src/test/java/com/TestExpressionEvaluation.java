@@ -210,9 +210,10 @@ public class TestExpressionEvaluation {
         tokens.add(new ArrayList<String>(Arrays.asList("defun", "max", "#1", "#2")));
         NestedLists.put("#1", new ArrayList<String>(Arrays.asList("a", "b")));
         NestedLists.put("#2", new ArrayList<String>(Arrays.asList("cond", "#3", "#4")));
-        NestedLists.put("#3", new ArrayList<String>(Arrays.asList(">", "a", "b")));
+        NestedLists.put("#5", new ArrayList<String>(Arrays.asList(">", "a", "b")));
+        NestedLists.put("#3", new ArrayList<String>(Arrays.asList("#5", "5.0")));
         NestedLists.put("#4", new ArrayList<String>(Arrays.asList("t", "b")));
-        tokens.add(new ArrayList<String>(Arrays.asList("max", "3.0", "4.0")));
+        tokens.add(new ArrayList<String>(Arrays.asList("max", "4.0", "3.0")));
         ParserEnv parser = new ParserEnv(NestedLists);
         for (ArrayList<String> token : tokens){
             parser.Parsing(token);
@@ -222,7 +223,7 @@ public class TestExpressionEvaluation {
         for (AST<String> ast : parser.getLogicalOrder()){
             System.out.println(evaluator.evaluate(ast));
         }
-        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("4.0"));
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("5.0"));
     }
 
     @Test
@@ -233,8 +234,9 @@ public class TestExpressionEvaluation {
         NestedLists.put("#1", new ArrayList<String>(Arrays.asList("n")));
         NestedLists.put("#2", new ArrayList<String>(Arrays.asList("cond", "#3", "#4")));
         NestedLists.put("#3", new ArrayList<String>(Arrays.asList("=", "n", "0")));
-        NestedLists.put("#4", new ArrayList<String>(Arrays.asList("*", "n", "factorial", "#5")));
-        NestedLists.put("#5", new ArrayList<String>(Arrays.asList("-", "n", "1")));
+        NestedLists.put("#4", new ArrayList<String>(Arrays.asList("t","#6")));
+        NestedLists.put("#6", new ArrayList<String>(Arrays.asList("*", "n", "#5")));
+        NestedLists.put("#5", new ArrayList<String>(Arrays.asList("factorial", "-", "n", "1")));
         tokens.add(new ArrayList<String>(Arrays.asList("factorial", "5")));
         ParserEnv parser = new ParserEnv(NestedLists);
         for (ArrayList<String> token : tokens){
