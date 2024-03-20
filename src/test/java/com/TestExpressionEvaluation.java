@@ -45,7 +45,7 @@ public class TestExpressionEvaluation {
 
         ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
         tokens.add(new ArrayList<String>(Arrays.asList("+", "#", "$")));
-        
+        System.out.println("NestedLists: " + NestedLists.toString());
         for (ArrayList<String> token : tokens){
             parser.Parsing(token);
         }
@@ -161,47 +161,91 @@ public class TestExpressionEvaluation {
         }
         assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("32"));
     }
-    // @Test 
-    public void THEFINALBOSS_THEFIBONACCI(){
+    @Test
+    public void CondTestTValueWithNestedList(){
         HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
-        ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
-        tokens.add(new ArrayList<String>(Arrays.asList("defun", "fib", "#1", "#2")));
-        NestedLists.put("#1", new ArrayList<String>(Arrays.asList("n")));
-        NestedLists.put("#2", new ArrayList<String>(Arrays.asList("cond", "#3", "#4", "#5")));
-        NestedLists.put("#3", new ArrayList<String>(Arrays.asList("=", "n", "0")));
-        NestedLists.put("#4", new ArrayList<String>(Arrays.asList("=", "n", "1")));
-        NestedLists.put("#5", new ArrayList<String>(Arrays.asList("t", "#6")));
-        NestedLists.put("#6", new ArrayList<String>(Arrays.asList("+", "#7", "#8")));
-        NestedLists.put("#7", new ArrayList<String>(Arrays.asList("fib", "#9")));
-        NestedLists.put("#8", new ArrayList<String>(Arrays.asList("fib", "#10")));
-        NestedLists.put("#9", new ArrayList<String>(Arrays.asList("-", "n", "1")));
-        NestedLists.put("#10", new ArrayList<String>(Arrays.asList("-", "n", "2")));
-        
+        NestedLists.put("#3", new ArrayList<String>(Arrays.asList("=", "4", "3")));
+        NestedLists.put("#4", new ArrayList<String>(Arrays.asList("=", "3", "4")));
+        NestedLists.put("#8", new ArrayList<String>(Arrays.asList("+", "5", "5")));
+        NestedLists.put("#5", new ArrayList<String>(Arrays.asList("t", "#8")));
+        NestedLists.put("#", new ArrayList<String>(Arrays.asList("#3", "32")));
+        NestedLists.put("#2", new ArrayList<String>(Arrays.asList("#4", "1")));
         ParserEnv parser = new ParserEnv(NestedLists);
-        System.out.println("NestedLists: " + NestedLists.toString());
+        ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
+        tokens.add(new ArrayList<String>(Arrays.asList("cond", "#", "#2", "#5")));
+        
         for (ArrayList<String> token : tokens){
             parser.Parsing(token);
         }
-
         Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables());
-
-        /*
-         *         te va dolver algo tal que asi el parser
-         *     function["fib"] =         HASHDELOSPARAMETROS
-         *                              /               \    
-         *                             n               cond
-         *                                     /        |       \
-         *                                    =         =       t
-         *                                  / | \     / \ \     |
-         *                                n  0  0   n  1  1     +
-         *                                                     / \         
-         *                                                   fib  fib
-         *                                                   |    |              
-         *                                                   -    -
-         *                                                 / \   / \
-         *                                                n  1  n  2 
-         */
+        for (AST<String> ast : parser.getLogicalOrder()){
+            System.out.println(evaluator.evaluate(ast));
         }
-
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("10.0"));
     }
+
+    @Test 
+    public void TryingSimpleFunction(){
+        HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
+        ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
+        tokens.add(new ArrayList<String>(Arrays.asList("defun", "sum", "#1", "#2")));
+        NestedLists.put("#1", new ArrayList<String>(Arrays.asList("a", "b")));
+        NestedLists.put("#2", new ArrayList<String>(Arrays.asList("+", "a", "b")));
+        tokens.add(new ArrayList<String>(Arrays.asList("sum", "3", "4")));
+        ParserEnv parser = new ParserEnv(NestedLists);
+        for (ArrayList<String> token : tokens){
+            parser.Parsing(token);
+        }
+        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables());
+        System.out.println("NestedLists: " + NestedLists.toString());
+        for (AST<String> ast : parser.getLogicalOrder()){
+            System.out.println(evaluator.evaluate(ast));
+        }
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("7.0"));
+    }
+    @Test
+    public void ConditionalFunction(){
+        HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
+        ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
+        tokens.add(new ArrayList<String>(Arrays.asList("defun", "max", "#1", "#2")));
+        NestedLists.put("#1", new ArrayList<String>(Arrays.asList("a", "b")));
+        NestedLists.put("#2", new ArrayList<String>(Arrays.asList("cond", "#3", "#4")));
+        NestedLists.put("#3", new ArrayList<String>(Arrays.asList(">", "a", "b")));
+        NestedLists.put("#4", new ArrayList<String>(Arrays.asList("t", "b")));
+        tokens.add(new ArrayList<String>(Arrays.asList("max", "3.0", "4.0")));
+        ParserEnv parser = new ParserEnv(NestedLists);
+        for (ArrayList<String> token : tokens){
+            parser.Parsing(token);
+        }
+        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables());
+        System.out.println("NestedLists: " + NestedLists.toString());
+        for (AST<String> ast : parser.getLogicalOrder()){
+            System.out.println(evaluator.evaluate(ast));
+        }
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("4.0"));
+    }
+
+    @Test
+    public void TheFACTORIAL(){
+        HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
+        ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
+        tokens.add(new ArrayList<String>(Arrays.asList("defun", "factorial", "#1")));
+        NestedLists.put("#1", new ArrayList<String>(Arrays.asList("n")));
+        NestedLists.put("#2", new ArrayList<String>(Arrays.asList("cond", "#3", "#4")));
+        NestedLists.put("#3", new ArrayList<String>(Arrays.asList("=", "n", "0")));
+        NestedLists.put("#4", new ArrayList<String>(Arrays.asList("*", "n", "factorial", "#5")));
+        NestedLists.put("#5", new ArrayList<String>(Arrays.asList("-", "n", "1")));
+        tokens.add(new ArrayList<String>(Arrays.asList("factorial", "5")));
+        ParserEnv parser = new ParserEnv(NestedLists);
+        for (ArrayList<String> token : tokens){
+            parser.Parsing(token);
+        }
+        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables());
+        System.out.println("NestedLists: " + NestedLists.toString());
+        for (AST<String> ast : parser.getLogicalOrder()){
+            System.out.println(evaluator.evaluate(ast));
+        }
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("120.0"));
+    }
+}
 

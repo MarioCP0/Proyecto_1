@@ -6,6 +6,11 @@ import java.util.LinkedList;
 
 import com.ParsingEstructures.AST;
 
+/**
+ * La clase {@code ParserEnv} actúa como un entorno de análisis para transformar listas
+ * y expresiones en una estructura de árbol abstracto (AST) correspondiente.
+ * Almacena funciones, variables, el orden lógico de las operaciones y listas anidadas.
+ */
 
 public class ParserEnv {
     /*
