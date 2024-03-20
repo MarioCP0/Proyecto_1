@@ -1,4 +1,4 @@
-package com.TokenizerEstructure;
+package com.Tokenizer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,6 +50,9 @@ public class Tokenizer {
                 continueProgram = false;
             }
         }
+
+        // Se eliminan los paréntesis de las expresiones anidadas
+        expresionesAnhidadas = removeParentheses(expresionesAnhidadas);
 
         tokens.addAll(tokensAsArray);
 
@@ -109,5 +112,29 @@ public class Tokenizer {
             matchingParentheses = ParenthesesMatcher.findMatchingParentheses(tokensAsArray); // se busca el match de parentesis con el nuevo ArrayList tokensAsArray
 
     }
+
+    /**
+     * Elimina los paréntesis de una expresión anidada.
+     * 
+     * @param expresionesAnidadas el mapa de expresiones anidadas
+     * @return un nuevo mapa con las expresiones anidadas sin paréntesis
+     */
+
+     public static Map<String, ArrayList<String>> removeParentheses(Map<String, ArrayList<String>> expresionesAnidadas) {
+        Map<String, ArrayList<String>> updatedExpresionesAnidadas = new HashMap<>();
+    
+        for (Map.Entry<String, ArrayList<String>> entry : expresionesAnidadas.entrySet()) {
+            ArrayList<String> updatedList = new ArrayList<>();
+            for (String s : entry.getValue()) {
+                String updatedValue = s.replace("(", "").replace(")", "");
+                updatedList.add(updatedValue);
+            }
+            updatedExpresionesAnidadas.put(entry.getKey(), updatedList);
+        }
+    
+        return updatedExpresionesAnidadas;
+    }
+
+    
 
 }

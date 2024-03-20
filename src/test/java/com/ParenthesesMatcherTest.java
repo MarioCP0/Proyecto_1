@@ -1,13 +1,12 @@
 package com;
 import org.junit.Test;
 
-import com.TokenizerEstructure.ParenthesesMatcher;
+import com.Tokenizer.ParenthesesMatcher;
 
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
-import com.TokenizerEstructure.ParenthesesMatcher;
 
 
 public class ParenthesesMatcherTest {

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import com.TokenizerEstructure.Tokenizer;
+import com.Tokenizer.Tokenizer;
 
 public class TokenizerTest {
 

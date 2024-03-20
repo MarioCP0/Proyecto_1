@@ -1,4 +1,4 @@
-package com.TokenizerEstructure;
+package com.Tokenizer;
 import java.util.*;
 
 /**
