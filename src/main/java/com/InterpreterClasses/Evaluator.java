@@ -38,6 +38,7 @@ public class Evaluator {
         return null; // resultado
     }
 
+    // TODO: Refactor the / and the - (it needs to intercalated one from the other)
     private String evaluateExpression(AST<String> ast) {
         Node<String> root = ast.getRoot();
         ArrayList<AST<String>> children = ast.getChildren();
@@ -49,7 +50,6 @@ public class Evaluator {
             return EvaluatingCond(ast);
         }
         if (functions.containsKey(root.getData())) {
-            System.out.println("Functions: " + root.getData());
             return EvaluatingFunction(functions.get(root.getData()), ast);
         }
         if (root.getData().equals("+")) {
@@ -69,16 +69,17 @@ public class Evaluator {
                 else {
                     result += Float.parseFloat(child.getRoot().getData());
                 }
+                System.out.println("Result: " + result);
             }
             return Float.toString(result);
         }
         if (root.getData().equals("-")) {
             float result = 0;
             for (AST<String> child : children) {
+                // Intercalate the negative sign
                 if (child.getRoot().getData().matches("[+\\-*/]")) {                    
                     result -= Float.parseFloat(evaluateExpression(child));
                 } else if (variables.containsKey(child.getRoot().getData())) {
-                    System.out.println("Value: " + variables.get(child.getRoot().getData()).get(TimeVariableHaveBeenSet.get(child.getRoot().getData())));
                     result -= Float.parseFloat(variables.get(child.getRoot().getData()).get(TimeVariableHaveBeenSet.get(child.getRoot().getData())));
                 }
                 else if (functionVariables.containsKey(child.getRoot().getData())) {
@@ -90,6 +91,7 @@ public class Evaluator {
                 else {
                     result -= Float.parseFloat(child.getRoot().getData());
                 }
+                System.out.println("Result: " + result);
             }
             return Float.toString(result);
         }
@@ -111,6 +113,7 @@ public class Evaluator {
                 else {
                     result *= Float.parseFloat(child.getRoot().getData());
                 }
+                System.out.println("Result: " + result);
             }
             return Float.toString(result);
         }
@@ -120,7 +123,6 @@ public class Evaluator {
                 if (child.getRoot().getData().matches("[+\\-*/]")) {                    
                     result /= Float.parseFloat(evaluateExpression(child));
                 } else if (variables.containsKey(child.getRoot().getData())) {
-                    System.out.println("Value: " + variables.get(child.getRoot().getData()).get(TimeVariableHaveBeenSet.get(child.getRoot().getData())));
                     result /= Float.parseFloat(variables.get(child.getRoot().getData()).get(TimeVariableHaveBeenSet.get(child.getRoot().getData())));
                 }
                 else if (functionVariables.containsKey(child.getRoot().getData())) {  
@@ -132,6 +134,7 @@ public class Evaluator {
                 else {
                     result /= Float.parseFloat(child.getRoot().getData());
                 }
+                System.out.println("Result: " + result);
             }
             return Float.toString(result);
         }
@@ -221,7 +224,6 @@ public class Evaluator {
         for (int i = 0; i < functionAST.getChildren().size()-1; i++) {
             functionVariables.put(functionAST.getChildren().get(i).getRoot().getData(), AstForArguments.getChildren().get(i).getRoot().getData());
         }
-
         return evaluateExpression(functionAST.getChildren().get(functionAST.getChildren().size()-1));
 
     }

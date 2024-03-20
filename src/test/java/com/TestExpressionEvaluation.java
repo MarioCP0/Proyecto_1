@@ -225,7 +225,25 @@ public class TestExpressionEvaluation {
         }
         assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("5.0"));
     }
+    @Test
+    public void FarenheitToCelsius(){
+        HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
+        ArrayList<ArrayList<String>>  tokens = new ArrayList<ArrayList<String>>();
+        tokens.add(new ArrayList<String>(Arrays.asList("defun", "farenheitToCelsius", "#1", "#2")));
+        NestedLists.put("#1", new ArrayList<String>(Arrays.asList("f")));
+        NestedLists.put("#2", new ArrayList<String>(Arrays.asList("*", "#3", "0.11111111")));
+        NestedLists.put("#3", new ArrayList<String>(Arrays.asList("*", "#4", "5")));
+        NestedLists.put("#4", new ArrayList<String>(Arrays.asList("+", "f", "-32")));
+        tokens.add(new ArrayList<String>(Arrays.asList("farenheitToCelsius", "212")));
+        ParserEnv parser = new ParserEnv(NestedLists);
+        for (ArrayList<String> token : tokens){
+            parser.Parsing(token);
+        }
+        Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables());
+        System.out.println("NestedLists: " + NestedLists.toString());
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("100.0"));
 
+    }
     @Test
     public void TheFACTORIAL(){
         HashMap<String, ArrayList<String>> NestedLists = new HashMap<String, ArrayList<String>>();
