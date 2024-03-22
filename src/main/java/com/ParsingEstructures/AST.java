@@ -21,4 +21,11 @@ public class AST<T> {
         return root.children;
     }
 
+    public void PrintTree(){
+        System.out.print(root.getData());
+        for (AST<T> child : root.children){
+            System.out.println("|");
+            child.PrintTree();
+        }
+    }
 }

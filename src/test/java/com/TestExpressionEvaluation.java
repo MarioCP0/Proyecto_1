@@ -257,6 +257,7 @@ public class TestExpressionEvaluation {
         NestedLists.put("#6", new ArrayList<String>(Arrays.asList("*", "n", "#7")));
         NestedLists.put("#7", new ArrayList<String>(Arrays.asList("factorial", "#8")));
         NestedLists.put("#8", new ArrayList<String>(Arrays.asList("+", "n", "-1")));
+
         tokens.add(new ArrayList<String>(Arrays.asList("factorial", "5")));
         ParserEnv parser = new ParserEnv(NestedLists);
         for (ArrayList<String> token : tokens){
@@ -264,9 +265,8 @@ public class TestExpressionEvaluation {
         }
         Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables());
         System.out.println("NestedLists: " + NestedLists.toString());
-        for (AST<String> ast : parser.getLogicalOrder()){
-            System.out.println(evaluator.evaluate(ast));
-        }
+
+        assertTrue(evaluator.evaluate(parser.getLogicalOrder().get(0)).equals("120.0"));
     }
 }
 

@@ -52,22 +52,16 @@ public class Evaluator {
         if (functions.containsKey(root.getData())) {
             return EvaluatingFunction(functions.get(root.getData()), ast);
         }
+        if (variables.containsKey(root.getData())) {
+            return variables.get(root.getData()).get(TimeVariableHaveBeenSet.get(root.getData()));
+        }
         if (root.getData().equals("+")) {
             float result = 0;
             for (AST<String> child : children) {
                 if (child.getRoot().getData().matches("[+\\-*/]")) {                    
+                    result += Float.parseFloat(evaluate(child));
+                }else{
                     result += Float.parseFloat(evaluateExpression(child));
-                } else if (variables.containsKey(child.getRoot().getData())) {
-                    result += Float.parseFloat(variables.get(child.getRoot().getData()).get(TimeVariableHaveBeenSet.get(child.getRoot().getData())));
-                }
-                else if (functionVariables.containsKey(child.getRoot().getData())) {
-                    result += Float.parseFloat(functionVariables.get(child.getRoot().getData()));       
-                }
-                else if (functions.containsKey(child.getRoot().getData())) {
-                    result += Float.parseFloat(EvaluatingFunction(functions.get(child.getRoot().getData()), child));
-                }
-                else {
-                    result += Float.parseFloat(child.getRoot().getData());
                 }
                 System.out.println("Result: " + result);
             }
@@ -78,18 +72,10 @@ public class Evaluator {
             for (AST<String> child : children) {
                 // Intercalate the negative sign
                 if (child.getRoot().getData().matches("[+\\-*/]")) {                    
-                    result -= Float.parseFloat(evaluateExpression(child));
-                } else if (variables.containsKey(child.getRoot().getData())) {
-                    result -= Float.parseFloat(variables.get(child.getRoot().getData()).get(TimeVariableHaveBeenSet.get(child.getRoot().getData())));
-                }
-                else if (functionVariables.containsKey(child.getRoot().getData())) {
-                    result -= Float.parseFloat(functionVariables.get(child.getRoot().getData()));
-                }
-                else if (functions.containsKey(child.getRoot().getData())) {
-                    result -= Float.parseFloat(EvaluatingFunction(functions.get(child.getRoot().getData()), child));
-                }
+                    result -= Float.parseFloat(evaluate(child));
+                } 
                 else {
-                    result -= Float.parseFloat(child.getRoot().getData());
+                    result -= Float.parseFloat(evaluateExpression(child));
                 }
                 System.out.println("Result: " + result);
             }
@@ -99,19 +85,10 @@ public class Evaluator {
             float result = 1;
             for (AST<String> child : children) {
                 if (child.getRoot().getData().matches("[+\\-*/]")) {                    
-                    result *= Float.parseFloat(evaluateExpression(child));
-                } else if (variables.containsKey(child.getRoot().getData())) {
-                    System.out.println("Value: " + variables.get(child.getRoot().getData()).get(TimeVariableHaveBeenSet.get(child.getRoot().getData())));
-                    result *= Float.parseFloat(variables.get(child.getRoot().getData()).get(TimeVariableHaveBeenSet.get(child.getRoot().getData())));
-                }
-                else if (functionVariables.containsKey(child.getRoot().getData())) {
-                    result *= Float.parseFloat(functionVariables.get(child.getRoot().getData()));                   
-                }
-                else if (functions.containsKey(child.getRoot().getData())) {
-                    result *= Float.parseFloat(EvaluatingFunction(functions.get(child.getRoot().getData()), child));
-                }
+                    result *= Float.parseFloat(evaluate(child));
+                } 
                 else {
-                    result *= Float.parseFloat(child.getRoot().getData());
+                    result *= Float.parseFloat(evaluateExpression(child));
                 }
                 System.out.println("Result: " + result);
             }
@@ -121,18 +98,10 @@ public class Evaluator {
             float result = 1;
             for (AST<String> child : children) {
                 if (child.getRoot().getData().matches("[+\\-*/]")) {                    
-                    result /= Float.parseFloat(evaluateExpression(child));
-                } else if (variables.containsKey(child.getRoot().getData())) {
-                    result /= Float.parseFloat(variables.get(child.getRoot().getData()).get(TimeVariableHaveBeenSet.get(child.getRoot().getData())));
-                }
-                else if (functionVariables.containsKey(child.getRoot().getData())) {  
-                    result /= Float.parseFloat(functionVariables.get(child.getRoot().getData()));              
-                }
-                else if (functions.containsKey(child.getRoot().getData())) {
-                    result /= Float.parseFloat(EvaluatingFunction(functions.get(child.getRoot().getData()), child));
+                    result /= Float.parseFloat(evaluate(child));
                 }
                 else {
-                    result /= Float.parseFloat(child.getRoot().getData());
+                    result /= Float.parseFloat(evaluateExpression(child));
                 }
                 System.out.println("Result: " + result);
             }
@@ -144,76 +113,34 @@ public class Evaluator {
     // TODO: REFACTOR ALL THE COND (ONE TEST WORKS BUT NEEDS TO BE TESTED MORE)
     private String EvaluatingCond(AST<String> ast) {
         for (AST<String> child : ast.getChildren()){
-            if (child.getRoot().getData().equals("t")){
-                System.out.println("T: " + child.getChildren().get(0).getRoot().getData());
-                return evaluateExpression(child.getChildren().get(0));
-            }
-            if (child.getRoot().getData().equals("=")){
-                if (functionVariables.containsKey(child.getChildren().get(0).getRoot().getData()) && functionVariables.containsKey(child.getChildren().get(1).getRoot().getData())) {
-                    if (Float.parseFloat(functionVariables.get(child.getChildren().get(0).getRoot().getData())) == Float.parseFloat(functionVariables.get(child.getChildren().get(1).getRoot().getData()))){ //TODO: change this for having case variable number and like that
-                        return evaluateExpression(child.getChildren().get(2));
-                    }
-                }
-                else if (functionVariables.containsKey(child.getChildren().get(0).getRoot().getData()) && !functionVariables.containsKey(child.getChildren().get(1).getRoot().getData())) {
-                    if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) == Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
-                        return evaluateExpression(child.getChildren().get(2));
-                    }
-                }
-                else{
-                    if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) == Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
-                        return evaluateExpression(child.getChildren().get(2));
-                    }
-                }
-            }
-            if (child.getRoot().getData().equals(">=")){
-                if (functionVariables.containsKey(child.getChildren().get(0).getRoot().getData()) && functionVariables.containsKey(child.getChildren().get(1).getRoot().getData())) {
-                    if (Float.parseFloat(functionVariables.get(child.getChildren().get(0).getRoot().getData())) >= Float.parseFloat(functionVariables.get(child.getChildren().get(1).getRoot().getData()))){
-                        return evaluateExpression(child.getChildren().get(2));
-                    }
-                }
-                else{
-                    if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) >= Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
-                        return evaluateExpression(child.getChildren().get(2));
-                    }
-                }
-            }
-            if (child.getRoot().getData().equals("<=")){
-                if (functionVariables.containsKey(child.getChildren().get(0).getRoot().getData()) && functionVariables.containsKey(child.getChildren().get(1).getRoot().getData())) {
-                    if (Float.parseFloat(functionVariables.get(child.getChildren().get(0).getRoot().getData())) <= Float.parseFloat(functionVariables.get(child.getChildren().get(1).getRoot().getData()))){
-                        return evaluateExpression(child.getChildren().get(2));
-                    }
-                }
-                else{
-                    if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) <= Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
-                        return evaluateExpression(child.getChildren().get(2));
-                    }
-                }
-            }
-            if (child.getRoot().getData().equals(">")){
-                if (functionVariables.containsKey(child.getChildren().get(0).getRoot().getData()) && functionVariables.containsKey(child.getChildren().get(1).getRoot().getData())) {
-                    if (Float.parseFloat(functionVariables.get(child.getChildren().get(0).getRoot().getData())) > Float.parseFloat(functionVariables.get(child.getChildren().get(1).getRoot().getData()))){
-                        return evaluateExpression(child.getChildren().get(2));
-                    }
-                }
-                else{
-                    if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) > Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
-                        return evaluateExpression(child.getChildren().get(2));
-                    }
-                }
-            }
-            if (child.getRoot().getData().equals("<")){
-                if (functionVariables.containsKey(child.getChildren().get(0).getRoot().getData()) && functionVariables.containsKey(child.getChildren().get(1).getRoot().getData())) {
-                    System.out.println("Key: " + child.getChildren().get(0).getRoot().getData());
-                    System.out.println("Value: " + functionVariables.get(child.getChildren().get(0).getRoot().getData()));
-                    if (Float.parseFloat(functionVariables.get(child.getChildren().get(0).getRoot().getData())) < Float.parseFloat(functionVariables.get(child.getChildren().get(1).getRoot().getData()))){
-                        return evaluateExpression(child.getChildren().get(2));
-                    }
-                }
-                else{
+            switch (child.getRoot().getData()) {
+                case "t":
+                    return evaluateExpression(child.getChildren().get(0));
+                case "<":
                     if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) < Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
                         return evaluateExpression(child.getChildren().get(2));
                     }
-                }
+                    break;
+                case ">":
+                    if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) > Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
+                        return evaluateExpression(child.getChildren().get(2));
+                    }
+                    break;
+                case "=":
+                    if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) == Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
+                        return evaluateExpression(child.getChildren().get(2));
+                    }
+                    break;
+                case "<=":
+                    if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) <= Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
+                        return evaluateExpression(child.getChildren().get(2));
+                    }
+                    break;
+                case ">=":
+                    if (Float.parseFloat(evaluateExpression(child.getChildren().get(0))) >= Float.parseFloat(evaluateExpression(child.getChildren().get(1)))){
+                        return evaluateExpression(child.getChildren().get(2));
+                    }
+                    break;
             }
         }
         return null;
@@ -222,7 +149,7 @@ public class Evaluator {
     private String EvaluatingFunction(AST<String> functionAST, AST<String> AstForArguments) {
         // Crear un nuevo entorno para la funcion
         for (int i = 0; i < functionAST.getChildren().size()-1; i++) {
-            functionVariables.put(functionAST.getChildren().get(i).getRoot().getData(), AstForArguments.getChildren().get(i).getRoot().getData());
+            functionVariables.put(functionAST.getChildren().get(i).getRoot().getData(), evaluateExpression(AstForArguments.getChildren().get(i)));
         }
         return evaluateExpression(functionAST.getChildren().get(functionAST.getChildren().size()-1));
 
