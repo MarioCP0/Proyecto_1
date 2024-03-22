@@ -68,7 +68,8 @@ public class Evaluator {
             return Float.toString(result);
         }
         if (root.getData().equals("-")) {
-            float result = 0;
+            float result = Float.parseFloat(evaluate(ast.getChildren().get(0)));
+            ast.getChildren().remove(0);
             for (AST<String> child : children) {
                 // Intercalate the negative sign
                 if (child.getRoot().getData().matches("[+\\-*/]")) {                    
@@ -95,7 +96,8 @@ public class Evaluator {
             return Float.toString(result);
         }
         if (root.getData().equals("/")) {
-            float result = 1;
+            float result = Float.parseFloat(evaluate(ast.getChildren().get(0)));
+            ast.getChildren().remove(0);
             for (AST<String> child : children) {
                 if (child.getRoot().getData().matches("[+\\-*/]")) {                    
                     result /= Float.parseFloat(evaluate(child));
