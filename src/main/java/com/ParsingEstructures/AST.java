@@ -20,12 +20,4 @@ public class AST<T> {
     public ArrayList<AST<T>> getChildren() {
         return root.children;
     }
-
-    public void PrintTree(){
-        System.out.print(root.getData());
-        for (AST<T> child : root.children){
-            System.out.println("|");
-            child.PrintTree();
-        }
-    }
 }
