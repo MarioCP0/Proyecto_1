@@ -72,7 +72,6 @@ public class Evaluator {
                 }else{
                     result += Float.parseFloat(evaluateExpression(child));
                 }
-                System.out.println("Result: " + result);
             }
             return Float.toString(result);
         }
@@ -87,7 +86,6 @@ public class Evaluator {
                 else {
                     result -= Float.parseFloat(evaluateExpression(child));
                 }
-                System.out.println("Result: " + result);
             }
             return Float.toString(result);
         }
@@ -100,7 +98,6 @@ public class Evaluator {
                 else {
                     result *= Float.parseFloat(evaluateExpression(child));
                 }
-                System.out.println("Result: " + result);
             }
             return Float.toString(result);
         }
@@ -114,7 +111,6 @@ public class Evaluator {
                 else {
                     result /= Float.parseFloat(evaluateExpression(child));
                 }
-                System.out.println("Result: " + result);
             }
             return Float.toString(result);
         }

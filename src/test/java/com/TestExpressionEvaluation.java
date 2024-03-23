@@ -24,7 +24,7 @@ public class TestExpressionEvaluation {
             parser.Parsing(token);
         }
         Evaluator evaluator = new Evaluator(parser.getFunctions(), parser.getVariables() );
-        System.out.println(evaluator.evaluate(parser.getLogicalOrder().get(0))); //TODO: Tenes que cambiar cosas del programa, esto solo fue para que se viera bonis
+        System.out.println(evaluator.evaluate(parser.getLogicalOrder().get(0)));        
         // EL EVALUATOR, EL TESTO NO CAMBIAR
 
         /*
