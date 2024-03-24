@@ -1,7 +1,12 @@
 package com.ParsingEstructures;
 
 import java.util.ArrayList;
-
+/**
+ * Es es k-ario árbol, donde cada nodo es su propio arbol casi que y cada hijo tambien 
+ * 
+ * @param <T> El tipo del valor contenido por los nodos en este AST. Es como elegir
+ * el sabor de tu cálculo, y te aseguro, es una elección crucial.
+ */
 public class AST<T> {
     private Node<T> root;
 
