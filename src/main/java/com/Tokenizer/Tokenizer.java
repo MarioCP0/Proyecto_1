@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * La clase Tokenizer se utiliza para tokenizar una cadena de entrada en una lista de tokens.
- * También se encarga de encontrar y almacenar las expresiones anidadas en un HashMap.
+ * La clase Tokenizer se utiliza para tokenizar una cadena de entrada en una
+ * lista de tokens.
+ * También se encarga de encontrar y almacenar las expresiones anidadas en un
+ * HashMap.
  * Los tokens se almacenan en un ArrayList.
  */
 public class Tokenizer {
@@ -26,21 +28,28 @@ public class Tokenizer {
      * @param input la cadena de entrada a tokenizar
      * @return una lista de tokens
      */
-    public  ArrayList<String> tokenize(String input) {
+    public ArrayList<String> tokenize(String input) {
+
+        if (input == null || input.isEmpty()) { // Se verifica si la cadena de entrada es nula o vacía
+            return new ArrayList<>();
+        }
 
         ArrayList<String> tokens = new ArrayList<>(); // Aquí se guardan los tokens
         addTokensToArrayList(input, tokensAsArray); // Se agregan los tokens a un tokenAsArray
 
-        while (continueProgram){
+        while (continueProgram) {
 
-
-            matchingParentheses = ParenthesesMatcher.findMatchingParentheses(tokensAsArray); // Se buscan los paréntesis anidados
+            matchingParentheses = ParenthesesMatcher.findMatchingParentheses(tokensAsArray); // Se buscan los paréntesis
+                                                                                             // anidados
 
             // Create a copy of the matchingParentheses map
             Map<Integer, Integer> tempMathchingParentheses = new TreeMap<>(Collections.reverseOrder());
             tempMathchingParentheses.putAll(matchingParentheses);
 
-            Map.Entry<Integer, Integer> entry = tempMathchingParentheses.entrySet().iterator().next(); // Se obtiene el primer par de paréntesis anidados
+            Map.Entry<Integer, Integer> entry = tempMathchingParentheses.entrySet().iterator().next(); // Se obtiene el
+                                                                                                       // primer par de
+                                                                                                       // paréntesis
+                                                                                                       // anidados
             Integer start = entry.getKey(); // Se obtiene el índice del paréntesis de apertura
             Integer end = entry.getValue(); // Se obtiene el índice del paréntesis de cierre
 
@@ -56,19 +65,22 @@ public class Tokenizer {
 
         tokens.addAll(tokensAsArray);
 
-
         return tokens;
     }
 
     /**
      * Agrega todos los tokens de entrada a un ArrayList.
      * 
-     * @param input La cadena de entrada que contiene los tokens.
+     * @param input         La cadena de entrada que contiene los tokens.
      * @param tokensAsArray El ArrayList donde se agregarán los tokens.
      * @return El ArrayList con los tokens agregados.
      */
-    public static ArrayList<String> addTokensToArrayList(String input, ArrayList<String> tokensAsArray) { // Este método agrega todos los tokens a un ArrayList
-        String[] split = input.split("\\s+|(?<=\\()|(?=\\))"); 
+    public static ArrayList<String> addTokensToArrayList(String input, ArrayList<String> tokensAsArray) { // Este método
+                                                                                                          // agrega
+                                                                                                          // todos los
+                                                                                                          // tokens a un
+                                                                                                          // ArrayList
+        String[] split = input.split("\\s+|(?<=\\()|(?=\\))");
 
         for (String s : split) {
             if (s.equals("")) {
@@ -83,33 +95,41 @@ public class Tokenizer {
      * Agrega una expresión anidada al mapa de expresiones.
      * 
      * @param start el índice de inicio de la expresión en la lista de tokens
-     * @param end el índice de fin de la expresión en la lista de tokens
+     * @param end   el índice de fin de la expresión en la lista de tokens
      * @throws IllegalArgumentException si los índices de inicio o fin son inválidos
      */
     public static void addExpressionToMap(int start, int end) {
-        if (start < 0 || start >= tokensAsArray.size() || end < 0 || end >= tokensAsArray.size()) { // aqui se verifica que los indices sean validos
+        if (start < 0 || start >= tokensAsArray.size() || end < 0 || end >= tokensAsArray.size()) { // aqui se verifica
+                                                                                                    // que los indices
+                                                                                                    // sean validos
             throw new IllegalArgumentException("Invalid start or end index");
         }
 
-        ArrayList<String> expression = new ArrayList<>(); // en esta lista se guardan la expresion anidada , que se agregara al HashMap
-        List<Integer> indicesToRemove = new ArrayList<>(); // los valores que se eliminaran del ArrayList tokensAsArray original
+        ArrayList<String> expression = new ArrayList<>(); // en esta lista se guardan la expresion anidada , que se
+                                                          // agregara al HashMap
+        List<Integer> indicesToRemove = new ArrayList<>(); // los valores que se eliminaran del ArrayList tokensAsArray
+                                                           // original
 
-        for (int i = start; i <= end; i++) { // se recorre el ArrayList tokensAsArray basado en los indices start y end dados por el HashMap matchingParentheses
+        for (int i = start; i <= end; i++) { // se recorre el ArrayList tokensAsArray basado en los indices start y end
+                                             // dados por el HashMap matchingParentheses
             expression.add(tokensAsArray.get(i)); // se agrega el token al ArrayList expression
-                indicesToRemove.add(i); // Se agrega a los valores que se removeran
-            }
+            indicesToRemove.add(i); // Se agrega a los valores que se removeran
+        }
 
-            String key = String.valueOf(expression.hashCode()); // se genera un key para el HashMap expresionesAnhidadas
-            expresionesAnhidadas.put(key, expression); // se agrega la expresion anidada al HashMap expresionesAnhidadas
+        String key = String.valueOf(expression.hashCode()); // se genera un key para el HashMap expresionesAnhidadas
+        expresionesAnhidadas.put(key, expression); // se agrega la expresion anidada al HashMap expresionesAnhidadas
 
-            // Se eliminan los tokens de tokensAsArray que se agregaron a expression
+        // Se eliminan los tokens de tokensAsArray que se agregaron a expression
         for (int j = indicesToRemove.size() - 1; j >= 0; j--) {
-                tokensAsArray.remove((int) indicesToRemove.get(j));
-            }
+            tokensAsArray.remove((int) indicesToRemove.get(j));
+        }
 
-            tokensAsArray.add(start, key); // se agrega el Hash code a la posicion donde estaba la expresión anidada
-            matchingParentheses.clear(); // se limpia el HashMap matchingParentheses para que se busque el match de parentesis con el nuevo ArrayList tokensAsArray
-            matchingParentheses = ParenthesesMatcher.findMatchingParentheses(tokensAsArray); // se busca el match de parentesis con el nuevo ArrayList tokensAsArray
+        tokensAsArray.add(start, key); // se agrega el Hash code a la posicion donde estaba la expresión anidada
+        matchingParentheses.clear(); // se limpia el HashMap matchingParentheses para que se busque el match de
+                                     // parentesis con el nuevo ArrayList tokensAsArray
+        matchingParentheses = ParenthesesMatcher.findMatchingParentheses(tokensAsArray); // se busca el match de
+                                                                                         // parentesis con el nuevo
+                                                                                         // ArrayList tokensAsArray
 
     }
 
@@ -120,9 +140,9 @@ public class Tokenizer {
      * @return un nuevo mapa con las expresiones anidadas sin paréntesis
      */
 
-     public static Map<String, ArrayList<String>> removeParentheses(Map<String, ArrayList<String>> expresionesAnidadas) {
+    public  Map<String, ArrayList<String>> removeParentheses(Map<String, ArrayList<String>> expresionesAnidadas) {
         Map<String, ArrayList<String>> updatedExpresionesAnidadas = new HashMap<>();
-    
+
         for (Map.Entry<String, ArrayList<String>> entry : expresionesAnidadas.entrySet()) {
             ArrayList<String> updatedList = new ArrayList<>();
             for (String s : entry.getValue()) {
@@ -131,10 +151,12 @@ public class Tokenizer {
             }
             updatedExpresionesAnidadas.put(entry.getKey(), updatedList);
         }
-    
+
         return updatedExpresionesAnidadas;
     }
 
- 
+    public Map<String, ArrayList<String>> getExpresionesAnhidadas() {
+        return expresionesAnhidadas;
+    }
 
 }

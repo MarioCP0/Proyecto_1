@@ -23,9 +23,4 @@ public class FileReaderExample {
         return expressions.toString();
     }
 
-    public static void main(String[] args) {
-        FileReaderExample fileReaderExample = new FileReaderExample();
-        String expressions = fileReaderExample.readExpressionsFromFile("lisp_files\\tokens.lisp");
-        System.out.println(expressions);
-    }
 }

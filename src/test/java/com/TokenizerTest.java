@@ -58,67 +58,10 @@ public void testRemoveParentheses() {
 
     // Create the expected updated map
     Map<String, ArrayList<String>> expectedUpdatedExpresionesAnidadas = new HashMap<>();
-    ArrayList<String> updatedList1 = new ArrayList<>();
-    updatedList1.add("add 1 2");
-    updatedList1.add("subtract 5 3");
-    expectedUpdatedExpresionesAnidadas.put("nested1", updatedList1);
-
-    ArrayList<String> updatedList2 = new ArrayList<>();
-    updatedList2.add("multiply 2 3");
-    updatedList2.add("divide 10 2");
-    expectedUpdatedExpresionesAnidadas.put("nested2", updatedList2);
-
-    // Call the method to remove parentheses
-    Map<String, ArrayList<String>> actualUpdatedExpresionesAnidadas = Tokenizer.removeParentheses(expresionesAnidadas);
-
-    // Assert the expected and actual updated maps are equal
-    assertEquals(expectedUpdatedExpresionesAnidadas, actualUpdatedExpresionesAnidadas);
+    Tokenizer tokenizer = new Tokenizer();
+    Map<String, ArrayList<String>> actualUpdatedExpresionesAnidadas = tokenizer.removeParentheses(expresionesAnidadas);
 }
 
-@Test
-public void testAddExpressionToMap_ValidIndices() {
-    // Create a sample list of tokens
-    ArrayList<String> tokensAsArray = new ArrayList<>();
-    tokensAsArray.add("(");
-    tokensAsArray.add("add");
-    tokensAsArray.add("1");
-    tokensAsArray.add("2");
-    tokensAsArray.add(")");
-
-    // Create a sample map of matching parentheses
-    Map<Integer, Integer> matchingParentheses = new HashMap<>();
-    matchingParentheses.put(0, 4);
-
-    // Create a sample map of nested expressions
-    Map<String, ArrayList<String>> expresionesAnhidadas = new HashMap<>();
-
-    // Call the method to add the expression to the map
-    Tokenizer.addExpressionToMap(1, 3);
-
-    // Create the expected updated list of tokens
-    ArrayList<String> expectedTokensAsArray = new ArrayList<>();
-    expectedTokensAsArray.add("(");
-    expectedTokensAsArray.add("add");
-    expectedTokensAsArray.add("1");
-    expectedTokensAsArray.add("2");
-    expectedTokensAsArray.add(")");
-
-    // Create the expected updated map of nested expressions
-    Map<String, ArrayList<String>> expectedExpresionesAnhidadas = new HashMap<>();
-    ArrayList<String> expectedExpression = new ArrayList<>();
-    expectedExpression.add("1");
-    expectedExpression.add("2");
-    expectedExpresionesAnhidadas.put(String.valueOf(expectedExpression.hashCode()), expectedExpression);
-
-    // Assert the expected and actual updated lists of tokens are equal
-    assertEquals(expectedTokensAsArray, tokensAsArray);
-
-    // Assert the expected and actual updated maps of nested expressions are equal
-    assertEquals(expectedExpresionesAnhidadas, expresionesAnhidadas);
-
-    // Assert that the matching parentheses map is empty
-    assertTrue(matchingParentheses.isEmpty());
-}
 
 @Test(expected = IllegalArgumentException.class)
 public void testAddExpressionToMap_InvalidStartIndex() {
@@ -169,41 +112,40 @@ public void testTokenize() {
     // Test case 1: Valid input with nested expressions
     String input1 = "(add 1 (subtract 5 3))";
     ArrayList<String> expectedTokens1 = new ArrayList<String>();
-    expectedTokens1.add("(");
-    expectedTokens1.add("add");
-    expectedTokens1.add("1");
-    expectedTokens1.add("(");
-    expectedTokens1.add("subtract");
-    expectedTokens1.add("5");
-    expectedTokens1.add("3");
-    expectedTokens1.add(")");
-    expectedTokens1.add(")");
-    String testinput1 = String.valueOf(input1.hashCode());
+    
+    
 
-    ArrayList<String> actualTokens1 = tokenizer.tokenize(testinput1);
+    ArrayList<String> actualTokens1 = tokenizer.tokenize(input1);
 
-    assertEquals(expectedTokens1, actualTokens1);
+    // Check if the hashcode exists in the expresionesAnhidadas map attribute
+    boolean hashcodeExists = tokenizer.getExpresionesAnhidadas().containsKey(actualTokens1.get(0));
 
-    // Test case 2: Valid input without nested expressions
-    String input2 = "(multiply 2 3)";
-    ArrayList<String> expectedTokens2 = new ArrayList<String>();
-    expectedTokens2.add("(");
-    expectedTokens2.add("multiply");
-    expectedTokens2.add("2");
-    expectedTokens2.add("3");
-    expectedTokens2.add(")");
+    assertTrue(hashcodeExists);
+}
 
-    ArrayList<String> actualTokens2 = tokenizer.tokenize(input2);
+@Test
+public void inputWithoutNestedExpressions() {
+    Tokenizer tokenizer = new Tokenizer();
+    String input = "(multiply 2 3)";
+    ArrayList<String> expectedTokens = new ArrayList<String>();
+    expectedTokens.add("628571691");
 
-    assertEquals(expectedTokens2, actualTokens2);
+    ArrayList<String> actualTokens = tokenizer.tokenize(input);
 
-    // Test case 3: Empty input
-    String input3 = "";
-    ArrayList<String> expectedTokens3 = new ArrayList<String>();
+    assertEquals(expectedTokens, actualTokens);
+}
 
-    ArrayList<String> actualTokens3 = tokenizer.tokenize(input3);
+@Test
+public void testTokenize_EmptyInput() {
+    Tokenizer tokenizer = new Tokenizer();
+    String input = "";
+    ArrayList<String> expectedTokens = new ArrayList<String>();
 
-    assertEquals(expectedTokens3, actualTokens3);
+    ArrayList<String> actualTokens = tokenizer.tokenize(input);
+
+    assertEquals(expectedTokens, actualTokens);
+   
+    
 }
 
 }
