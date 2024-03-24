@@ -78,6 +78,8 @@ public class Tokenizer {
         */
     public ArrayList<ArrayList<String>> expressionValues(ArrayList<String> tokens) {
         ArrayList<ArrayList<String>> values = new ArrayList<>();
+
+        
         for (String token : tokens) {
             if (expresionesAnhidadas.containsKey(token)) {
                 values.add(expresionesAnhidadas.get(token));
@@ -134,6 +136,8 @@ public class Tokenizer {
 
         for (int i = start; i <= end; i++) { // se recorre el ArrayList tokensAsArray basado en los indices start y end
                                              // dados por el HashMap matchingParentheses
+
+            
             expression.add(tokensAsArray.get(i)); // se agrega el token al ArrayList expression
             indicesToRemove.add(i); // Se agrega a los valores que se removeran
         }
@@ -162,19 +166,20 @@ public class Tokenizer {
      * @return un nuevo mapa con las expresiones anidadas sin paréntesis
      */
 
-    public  Map<String, ArrayList<String>> removeParentheses(Map<String, ArrayList<String>> expresionesAnidadas) {
-        Map<String, ArrayList<String>> updatedExpresionesAnidadas = new HashMap<>();
+     public Map<String, ArrayList<String>> removeParentheses(Map<String, ArrayList<String>> nestedExpressions) {
+        Map<String, ArrayList<String>> updatedNestedExpressions = new HashMap<>();
 
-        for (Map.Entry<String, ArrayList<String>> entry : expresionesAnidadas.entrySet()) {
+        for (Map.Entry<String, ArrayList<String>> entry : nestedExpressions.entrySet()) {
             ArrayList<String> updatedList = new ArrayList<>();
             for (String s : entry.getValue()) {
-                String updatedValue = s.replace("(", "").replace(")", "");
-                updatedList.add(updatedValue);
+                if (!s.contains("(") && !s.contains(")")) {
+                    updatedList.add(s);
+                }
             }
-            updatedExpresionesAnidadas.put(entry.getKey(), updatedList);
+            updatedNestedExpressions.put(entry.getKey(), updatedList);
         }
 
-        return updatedExpresionesAnidadas;
+        return updatedNestedExpressions;
     }
 
     /**
@@ -204,7 +209,7 @@ public class Tokenizer {
 
     public static void main (String[] args) {
         Tokenizer tokenizer = new Tokenizer();
-        String input = "(multiply 2 3)" ;
+        String input = "(defun factorial (n) (cond ((= n 0) 1) (t (* n (factorial (+ n -1)))))) (factorial 5)" ;
         ArrayList<ArrayList<String>> actualTokens1 = tokenizer.tokenize(input);
         
         System.out.println(actualTokens1);
