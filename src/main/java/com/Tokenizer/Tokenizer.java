@@ -28,7 +28,7 @@ public class Tokenizer {
      * @param input la cadena de entrada a tokenizar
      * @return una lista de tokens
      */
-    public ArrayList<String> tokenize(String input) {
+    public ArrayList<ArrayList<String>> tokenize(String input) {
 
         if (input == null || input.isEmpty()) { // Se verifica si la cadena de entrada es nula o vacía
             return new ArrayList<>();
@@ -65,7 +65,29 @@ public class Tokenizer {
 
         tokens.addAll(tokensAsArray);
 
-        return tokens;
+        ArrayList<ArrayList<String>> realValues = expressionValues(tokens);
+
+        return realValues;
+    }
+
+    /**
+        * Obtiene los valores de las expresiones en una lista de tokens.
+        * 
+        * @param tokens la lista de tokens que contiene las expresiones
+        * @return una lista de listas de cadenas que representa los valores de las expresiones
+        */
+    public ArrayList<ArrayList<String>> expressionValues(ArrayList<String> tokens) {
+        ArrayList<ArrayList<String>> values = new ArrayList<>();
+        for (String token : tokens) {
+            if (expresionesAnhidadas.containsKey(token)) {
+                values.add(expresionesAnhidadas.get(token));
+            } else {
+                ArrayList<String> value = new ArrayList<>();
+                value.add(token);
+                values.add(value);
+            }
+        }
+        return values;
     }
 
     /**
@@ -75,7 +97,7 @@ public class Tokenizer {
      * @param tokensAsArray El ArrayList donde se agregarán los tokens.
      * @return El ArrayList con los tokens agregados.
      */
-    public static ArrayList<String> addTokensToArrayList(String input, ArrayList<String> tokensAsArray) { // Este método
+    public  ArrayList<String> addTokensToArrayList(String input, ArrayList<String> tokensAsArray) { // Este método
                                                                                                           // agrega
                                                                                                           // todos los
                                                                                                           // tokens a un
@@ -98,7 +120,7 @@ public class Tokenizer {
      * @param end   el índice de fin de la expresión en la lista de tokens
      * @throws IllegalArgumentException si los índices de inicio o fin son inválidos
      */
-    public static void addExpressionToMap(int start, int end) {
+    public  void addExpressionToMap(int start, int end) {
         if (start < 0 || start >= tokensAsArray.size() || end < 0 || end >= tokensAsArray.size()) { // aqui se verifica
                                                                                                     // que los indices
                                                                                                     // sean validos
@@ -155,8 +177,37 @@ public class Tokenizer {
         return updatedExpresionesAnidadas;
     }
 
+    /**
+     * Detects if an expression is nested or not.
+     * 
+     * @param expression the expression to check
+     * @return true if the expression is nested, false otherwise
+     */
+    public boolean isNestedExpression(String expression) {
+        int openParenthesesCount = 0;
+        int closeParenthesesCount = 0;
+
+        for (char c : expression.toCharArray()) {
+            if (c == '(') {
+                openParenthesesCount++;
+            } else if (c == ')') {
+                closeParenthesesCount++;
+            }
+        }
+
+        return openParenthesesCount > 0 && closeParenthesesCount > 0;
+    }
+    
     public Map<String, ArrayList<String>> getExpresionesAnhidadas() {
         return expresionesAnhidadas;
+    }
+
+    public static void main (String[] args) {
+        Tokenizer tokenizer = new Tokenizer();
+        String input = "(multiply 2 3)" ;
+        ArrayList<ArrayList<String>> actualTokens1 = tokenizer.tokenize(input);
+        
+        System.out.println(actualTokens1);
     }
 
 }

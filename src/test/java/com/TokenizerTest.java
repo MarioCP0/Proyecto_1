@@ -23,8 +23,8 @@ public void testAddTokensToArrayList() {
     expectedTokens.add("1");
     expectedTokens.add("2");
     expectedTokens.add(")");
-
-    ArrayList<String> actualTokens = Tokenizer.addTokensToArrayList(input, new ArrayList<String>());
+    Tokenizer tokenizer = new Tokenizer();
+    ArrayList<String> actualTokens = tokenizer.addTokensToArrayList(input, new ArrayList<String>());
 
     assertEquals(expectedTokens, actualTokens);
 }
@@ -33,8 +33,8 @@ public void testAddTokensToArrayList() {
 public void testAddTokensToArrayList_EmptyInput() {
     String input = "";
     ArrayList<String> expectedTokens = new ArrayList<String>();
-
-    ArrayList<String> actualTokens = Tokenizer.addTokensToArrayList(input, new ArrayList<String>());
+    Tokenizer tokenizer = new Tokenizer();
+    ArrayList<String> actualTokens = tokenizer.addTokensToArrayList(input, new ArrayList<String>());
 
     assertEquals(expectedTokens, actualTokens);
 }
@@ -67,21 +67,8 @@ public void testRemoveParentheses() {
 public void testAddExpressionToMap_InvalidStartIndex() {
     // Create a sample list of tokens
     ArrayList<String> tokensAsArray = new ArrayList<>();
-    tokensAsArray.add("(");
-    tokensAsArray.add("add");
-    tokensAsArray.add("1");
-    tokensAsArray.add("2");
-    tokensAsArray.add(")");
-
-    // Create a sample map of matching parentheses
-    Map<Integer, Integer> matchingParentheses = new HashMap<>();
-    matchingParentheses.put(0, 4);
-
-    // Create a sample map of nested expressions
-    Map<String, ArrayList<String>> expresionesAnhidadas = new HashMap<>();
-
-    // Call the method with an invalid start index
-    Tokenizer.addExpressionToMap(-1, 3);
+    Tokenizer tokenizer = new Tokenizer();
+    tokenizer.addExpressionToMap(-1, 3);
 }
 
 @Test(expected = IllegalArgumentException.class)
@@ -100,9 +87,10 @@ public void testAddExpressionToMap_InvalidEndIndex() {
 
     // Create a sample map of nested expressions
     Map<String, ArrayList<String>> expresionesAnhidadas = new HashMap<>();
+    Tokenizer tokenizer = new Tokenizer();
 
     // Call the method with an invalid end index
-    Tokenizer.addExpressionToMap(1, 5);
+    tokenizer.addExpressionToMap(1, 5);
 }
 
 @Test
@@ -111,26 +99,34 @@ public void testTokenize() {
 
     // Test case 1: Valid input with nested expressions
     String input1 = "(add 1 (subtract 5 3))";
-    ArrayList<String> expectedTokens1 = new ArrayList<String>();
-    
-    
+    ArrayList<ArrayList<String>> expectedTokens1 = new ArrayList<ArrayList<String>>();
+    ArrayList<String> innerList1 = new ArrayList<String>();
+    innerList1.add("");
+    innerList1.add("add");
+    innerList1.add("1");
+    innerList1.add("-1708822914");
+    innerList1.add("");
+    expectedTokens1.add(innerList1);
 
-    ArrayList<String> actualTokens1 = tokenizer.tokenize(input1);
+    ArrayList<ArrayList<String>> actualTokens1 = tokenizer.tokenize(input1);
 
-    // Check if the hashcode exists in the expresionesAnhidadas map attribute
-    boolean hashcodeExists = tokenizer.getExpresionesAnhidadas().containsKey(actualTokens1.get(0));
-
-    assertTrue(hashcodeExists);
+    assertEquals(expectedTokens1, actualTokens1);
 }
 
 @Test
 public void inputWithoutNestedExpressions() {
     Tokenizer tokenizer = new Tokenizer();
     String input = "(multiply 2 3)";
-    ArrayList<String> expectedTokens = new ArrayList<String>();
-    expectedTokens.add("628571691");
+    ArrayList<ArrayList<String>> expectedTokens = new ArrayList<ArrayList<String>>();
+    ArrayList<String> innerList = new ArrayList<String>();
+    innerList.add("");
+    innerList.add("multiply");
+    innerList.add("2");
+    innerList.add("3");
+    innerList.add("");
+    expectedTokens.add(innerList);
 
-    ArrayList<String> actualTokens = tokenizer.tokenize(input);
+    ArrayList<ArrayList<String>> actualTokens = tokenizer.tokenize(input);
 
     assertEquals(expectedTokens, actualTokens);
 }
@@ -139,13 +135,11 @@ public void inputWithoutNestedExpressions() {
 public void testTokenize_EmptyInput() {
     Tokenizer tokenizer = new Tokenizer();
     String input = "";
-    ArrayList<String> expectedTokens = new ArrayList<String>();
+    ArrayList<ArrayList<String>> expectedTokens = new ArrayList<ArrayList<String>>();
 
-    ArrayList<String> actualTokens = tokenizer.tokenize(input);
+    ArrayList<ArrayList<String>> actualTokens = tokenizer.tokenize(input);
 
     assertEquals(expectedTokens, actualTokens);
-   
-    
 }
 
 }
