@@ -15,7 +15,7 @@ public class LispReader {
      * @param path La ruta del archivo a leer.
      * @return Una lista de strings, donde cada string es un token del contenido del archivo.
      */
-    public ArrayList<String> ReadLispFile(String path) {
+    public static ArrayList<String> ReadLispFile(String path) {
         ArrayList<String> tokens = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
@@ -34,7 +34,7 @@ public class LispReader {
      * @param input La línea de texto a tokenizar.
      * @return Un array de tokens extraídos de la línea.
      */
-    private String[] extractTokens(String input) {
+    private static String[] extractTokens(String input) {
         ArrayList<String> tokenList = new ArrayList<>();
         StringBuilder tokenBuilder = new StringBuilder();
         for (char c : input.toCharArray()) {

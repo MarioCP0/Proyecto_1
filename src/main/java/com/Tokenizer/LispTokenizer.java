@@ -15,28 +15,19 @@ public class LispTokenizer {
     /**
      * Mapea cada expresión a un identificador único.
      */
-    private HashMap<String, ArrayList<String>> expressionMap;
+    private static HashMap<String, ArrayList<String>> expressionMap = new HashMap<>();
 
     /**
      * Almacena la lista de expresiones como listas de cadenas.
      */
-    private ArrayList<ArrayList<String>> expressionList;
-
-    /**
-     * Constructor de la clase LispTokenizer.
-     * Inicializa los mapas y listas necesarios.
-     */
-    public LispTokenizer() {
-        expressionMap = new HashMap<>();
-        expressionList = new ArrayList<>();
-    }
+    private static ArrayList<ArrayList<String>> expressionList = new ArrayList<>();
 
     /**
      * Tokeniza una lista de tokens en expresiones Lisp.
      *
      * @param tokens Lista de tokens a tokenizar
      */
-    public void tokenize(List<String> tokens) {
+    public static void tokenize(List<String> tokens) {
         List<String> currentExpression = new ArrayList<>();
         int expressionCounter = 0;
         for (String token : tokens) {
@@ -69,7 +60,7 @@ public class LispTokenizer {
      *
      * @return El mapa de expresiones
      */
-    public HashMap<String, ArrayList<String>> getExpressionMap() {
+    public static HashMap<String, ArrayList<String>> getExpressionMap() {
         HashMap<String, ArrayList<String>> expressions = new HashMap<>();
         for (Map.Entry<String, ArrayList<String>> entry : expressionMap.entrySet()) {
             expressions.put(entry.getKey(), new ArrayList<>(entry.getValue()));
@@ -82,7 +73,7 @@ public class LispTokenizer {
      *
      * @return La lista de expresiones
      */
-    public ArrayList<ArrayList<String>> getExpressions() {
+    public static ArrayList<ArrayList<String>> getExpressions() {
         ArrayList<ArrayList<String>> expressions = new ArrayList<>();
         for (List<String> expression : expressionList) {
             expressions.add(new ArrayList<>(expression));
