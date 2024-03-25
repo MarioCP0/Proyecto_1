@@ -65,6 +65,21 @@ public class Evaluator {
         if (functionVariables.containsKey(root.getData())) { // devuelve el valor del parametro de la funcion
             return functionVariables.get(root.getData());
         }
+        if (root.getData().equals("list")) { //devuelve la lista
+            String list = "(";
+            for (AST<String> child : children) {
+                list += evaluate(child) + " ";
+            }
+            return list + ")";
+        }
+        if (root.getData().equals("print")){
+            String print = "";
+            for (AST<String> child : children) {
+                print += evaluate(child) + " ";
+            }
+            System.out.println(print);
+            return print;
+        }
         if (root.getData().equals("cond")){ //llama a la funcion del condicional
             return EvaluatingCond(ast);
         }

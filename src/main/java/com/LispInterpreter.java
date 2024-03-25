@@ -22,8 +22,8 @@ public class LispInterpreter {
             parser.Parsing(token);
         }
 
-        for (AST<String> ast : parser.getLogicalOrder()) { //didn't add a print function to the evaluator soo take this 
-            System.out.println(evaluator.evaluate(ast));
+        for (AST<String> ast : parser.getLogicalOrder()) {
+            evaluator.evaluate(ast);
         }
 
     }
