@@ -4,3 +4,8 @@
 
 (print (factorial 5))
 
+(print (* 4 99))
+
+(print (/ 1000 5))
+
+(print (- 7 10))
