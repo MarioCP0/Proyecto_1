@@ -45,5 +45,3 @@
   - Almacena la lista de expresiones tokenizadas.
 - **HashMap**:
   - Almacena funciones y variables durante la interpretación.
-
-Estas estructuras de datos se seleccionaron por su eficiencia en términos de acceso, inserción y eliminación de elementos, así como por su capacidad para representar de manera clara y precisa los datos necesarios en cada clase.
